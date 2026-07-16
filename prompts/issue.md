@@ -111,5 +111,12 @@ Every issue moves: *(no label)* → `in-progress` → `done`.
    gh api repos/{owner}/{repo}/issues/<parent_number>/sub_issues -F sub_issue_id=$sub_id
    ```
    (Use `gh repo view --json owner,name` if owner/repo aren't known.)
+   **This step is mandatory, then verify it worked**:
+   ```
+   gh api repos/{owner}/{repo}/issues/<parent_number>/sub_issues --jq '.[].number'
+   ```
+   must list every sub-issue you created. Any missing → the link failed;
+   redo it before reporting. The `## Parent` line in the body is context for
+   agents, NOT a substitute for the native link.
 5. If a milestone or assignee is obvious from context, add `--milestone` / `--assignee`.
 6. Report back: parent issue number + URL and each sub-issue number + URL. Do not start coding yet unless asked.

@@ -24,10 +24,13 @@ Rules:
   ```
   Bugs and chores stay single issues. Each sub-issue gets its own PR later
   (one sub-issue = one PR); the parent never gets a PR.
-- Ensure the status labels exist before creating issues (`gh label create
-  in-progress --color FBCA04`, `gh label create done --color 0E8A16` —
-  ignore already-exists errors). Create issues with **no** status label;
-  the orchestrator adds `in-progress`/`done` as work moves.
+- Ensure **every label you're about to use** exists before creating issues —
+  `gh issue create --label` fails on a missing label. Status labels
+  (`gh label create in-progress --color FBCA04`, `gh label create done
+  --color 0E8A16`) plus the type/area labels the issues will carry
+  (`feature`, `chore`, `backend`, `frontend`); ignore already-exists errors.
+  Create issues with **no** status label; the orchestrator adds
+  `in-progress`/`done` as work moves.
 - Acceptance criteria are testable statements tagged with the FR they verify.
   QA will check them by execution — write nothing that can't be verified.
 - Propose the full breakdown to the user before creating any issue.

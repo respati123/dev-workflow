@@ -94,11 +94,16 @@ Every issue moves: *(no label)* → `in-progress` → `done`.
 ## Create
 
 1. Build titles and bodies from the correct templates above. For a feature, propose the full breakdown (parent + sub-issue titles) to the user **before creating anything**.
-2. Ensure the status labels exist (idempotent — errors on existing labels are fine to ignore):
+2. Ensure every label you're about to use exists — `gh issue create --label` **fails** on a missing label (idempotent — errors on existing labels are fine to ignore):
    ```
    gh label create in-progress --color FBCA04 --description "Being worked on" 2>/dev/null
    gh label create done --color 0E8A16 --description "QA passed, awaiting/after merge" 2>/dev/null
+   gh label create feature --color A2EEEF 2>/dev/null
+   gh label create chore --color CFD3D7 2>/dev/null
+   gh label create backend --color 1D76DB 2>/dev/null
+   gh label create frontend --color D93F0B 2>/dev/null
    ```
+   (`bug` ships with GitHub by default; create it the same way if this repo deleted it.)
 3. Create each issue: `gh issue create --title "<title>" --body "<body>" --label "<labels>"`. For features: parent first, then backend sub-issue, then frontend sub-issue.
 4. Link each sub-issue to the parent using the sub-issues API (needs the sub-issue's database ID, not its number):
    ```

@@ -9,6 +9,9 @@ generation step.
 ```
 agents/    # the five roles: scout, pm, coder, techlead, qa
 prompts/   # /issue, /ship, /scout — slash commands
+extensions/
+  subagent/     # delegation tool: spawns a fresh `pi` process per role, streaming TUI
+                # (vendored from pi's official examples/extensions/subagent)
 skills/
   dev-start/    # per-project prep: git check + AGENTS.md mapping (installs nothing)
   create-brd/   # business requirements doc, interview-driven
@@ -20,7 +23,13 @@ skills/
 ```bash
 pi install /path/to/dev-workflow     # skills + prompts, loaded live (no copying)
 ln -s /path/to/dev-workflow/agents/*.md ~/.pi/agent/agents/   # roles (packages can't ship agents)
+mkdir -p ~/.pi/agent/extensions/subagent                      # delegation tool
+ln -s /path/to/dev-workflow/extensions/subagent/*.ts ~/.pi/agent/extensions/subagent/
 ```
+
+The subagent extension gives `/ship` real delegation: isolated context per
+role, live streaming of the child's tool calls, usage stats, Ctrl+C abort.
+Without it, `/ship` falls back to spawning `pi -p` via bash (works, no UI).
 
 Restart any running Pi session to pick the new resources up. Everything
 stays symlinked/live: `git pull` in this repo updates all projects at once.

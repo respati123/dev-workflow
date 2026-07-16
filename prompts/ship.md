@@ -5,10 +5,19 @@ argument-hint: "<task description | PRD path | issue number>"
 Drive this task end to end: $ARGUMENTS
 
 You are the orchestrator. Delegate each phase to the matching workflow role
-(scout, pm, coder, techlead, qa) using this tool's subagent mechanism; do the
-work yourself only if a role isn't available. You MUST stop at every
-**[CHECKPOINT]**: present the info concisely, ask, and WAIT for approval.
-Never merge — merging is always manual.
+(scout, pm, coder, techlead, qa):
+
+- If this tool has a native subagent mechanism, use it.
+- Otherwise (plain Pi), spawn a fresh-context child per phase via bash from
+  the project root: `pi -p "$(cat ~/.pi/agent/agents/<role>.md)` followed by
+  the task + context, and wait for its output.
+- Only if neither works, do the phase inline yourself — except **techlead
+  and qa, which MUST run with fresh context** (a review by the same context
+  that wrote the code is not a review); if you can't get fresh context for
+  them, stop and tell the user.
+
+You MUST stop at every **[CHECKPOINT]**: present the info concisely, ask,
+and WAIT for approval. Never merge — merging is always manual.
 
 **One sub-issue = one PR = one full cycle** (steps 3–6). Sub-issues run
 sequentially in dependency order (backend first). A dependent sub-issue does

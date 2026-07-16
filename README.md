@@ -11,14 +11,11 @@ skills/
   dev-start/        # bootstrap skill: git check, role wrappers, AGENTS.md mapping
     references/
       roles/        # canonical role definitions (single source of truth)
+      prompts/      # issue / ship / resume — installed into the tool's command dir
       adapters.md   # per-tool frontmatter mapping
       agents-md-template.md
   create-brd/       # business requirements doc, interview-driven
   create-prd/       # per-feature PRD, grounded in codebase research
-prompts/
-  issue.md          # parent issue + sub-issues conventions (gh)
-  ship.md           # end-to-end orchestration with checkpoints
-  resume.md         # resume interrupted work from detected state
 ```
 
 ## The workflow
@@ -39,15 +36,20 @@ Pipeline: `pm` → per sub-issue (`scout` → `coder` → PR) → `techlead` loo
 
 ## Install
 
-1. Clone this repo somewhere stable, e.g. `~/dev-workflow`.
-2. Make the skills discoverable to your tool:
-   - simplest: copy (or symlink) `skills/*` into the target project's
-     `.agents/skills/`
-   - or user-level: `~/.claude/skills/` (Claude Code), `~/.agents/skills/`
-     (tools following the cross-agent convention)
-3. In the target project, tell your agent: **"dev:start"**. It will check
-   git, generate the role wrappers for your tool, install the prompts, and
-   map the codebase into AGENTS.md. Idempotent — re-run any time.
+Via [skills.sh](https://www.skills.sh/) (once this repo is public on GitHub):
+
+```bash
+npx skills add <owner>/dev-workflow            # all three skills
+npx skills add <owner>/dev-workflow -s dev-start   # just the bootstrapper
+```
+
+Or manually: clone the repo and copy (or symlink) `skills/*` into the target
+project's `.agents/skills/`, or user-level `~/.claude/skills/` /
+`~/.agents/skills/`.
+
+Then, in the target project, tell your agent: **"dev:start"**. It will check
+git, generate the role wrappers for your tool, install the prompts, and map
+the codebase into AGENTS.md. Idempotent — re-run any time.
 
 ## Editing roles
 

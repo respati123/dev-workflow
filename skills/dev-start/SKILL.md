@@ -51,9 +51,10 @@ adapter doc):
 - No tool dir detectable → ask which tool(s) to target; don't generate all
   three speculatively.
 
-Also install the workflow prompts from this repo's `prompts/` (issue, ship,
-resume) into the detected tool's command directory (locations in the adapter
-doc), same never-overwrite rule.
+Also install the workflow prompts from
+[references/prompts/](references/prompts/) (issue, ship, resume) into the
+detected tool's command directory (locations in the adapter doc), same
+never-overwrite rule.
 
 ## Step 4 — Map the codebase into AGENTS.md
 

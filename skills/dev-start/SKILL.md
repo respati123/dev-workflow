@@ -52,10 +52,12 @@ adapter doc):
   three speculatively.
 
 Also install the workflow prompts from
-[references/prompts/](references/prompts/) (issue, ship) into the detected
-tool's command directory (locations in the adapter doc), same never-overwrite
-rule. There is no separate resume prompt — `/ship <issue number>` detects
-prior work (labels, branch, PR) and resumes from the right step.
+[references/prompts/](references/prompts/) (issue, ship, scout) into the
+detected tool's command directory (locations in the adapter doc), same
+never-overwrite rule. There is no separate resume prompt — `/ship <issue
+number>` detects prior work (labels, branch, PR) and resumes from the right
+step; `/scout` reports progress across all features and recommends the next
+action.
 
 ## Step 4 — Map the codebase into AGENTS.md
 

@@ -17,8 +17,17 @@ Rules:
   the BRD).
 - Features become one **parent issue** (feature-level acceptance criteria)
   plus **sub-issues** per implementable part (backend first, then frontend),
-  linked with GitHub's native sub-issues API. Bugs and chores stay single
-  issues.
+  linked with GitHub's native sub-issues API:
+  ```
+  sub_id=$(gh api repos/{owner}/{repo}/issues/<sub_number> --jq .id)
+  gh api repos/{owner}/{repo}/issues/<parent_number>/sub_issues -F sub_issue_id=$sub_id
+  ```
+  Bugs and chores stay single issues. Each sub-issue gets its own PR later
+  (one sub-issue = one PR); the parent never gets a PR.
+- Ensure the status labels exist before creating issues (`gh label create
+  in-progress --color FBCA04`, `gh label create done --color 0E8A16` —
+  ignore already-exists errors). Create issues with **no** status label;
+  the orchestrator adds `in-progress`/`done` as work moves.
 - Acceptance criteria are testable statements tagged with the FR they verify.
   QA will check them by execution — write nothing that can't be verified.
 - Propose the full breakdown to the user before creating any issue.

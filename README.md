@@ -11,7 +11,7 @@ skills/
   dev-start/        # bootstrap skill: git check, role wrappers, AGENTS.md mapping
     references/
       roles/        # canonical role definitions (single source of truth)
-      prompts/      # issue / ship / resume — installed into the tool's command dir
+      prompts/      # issue / ship — installed into the tool's command dir
       adapters.md   # per-tool frontmatter mapping
       agents-md-template.md
   create-brd/       # business requirements doc, interview-driven
@@ -31,8 +31,11 @@ or fresh context:
 | `techlead` | static diff review, fresh context, BLOCKING/LGTM | no |
 | `qa` | serial after LGTM; verifies acceptance criteria by execution | no |
 
-Pipeline: `pm` → per sub-issue (`scout` → `coder` → PR) → `techlead` loop
-(max 3 rounds) → `qa` → human merges. Agents never merge.
+Pipeline: `pm` → per sub-issue (`scout` → `coder` → PR → `techlead` loop,
+max 3 rounds → `qa`) → human merges → next sub-issue. **One sub-issue = one
+PR.** Issues carry `in-progress` / `done` labels so progress is trackable at
+a glance. `/ship <issue>` resumes interrupted work by detecting labels,
+branches, and PRs. Agents never merge.
 
 ## Install
 

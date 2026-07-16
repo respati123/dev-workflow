@@ -83,15 +83,28 @@ Sub-issues appear automatically in GitHub's sub-issue panel — don't maintain a
 
 Use the sub-issue/task template without the Parent section.
 
+## Status labels (lifecycle)
+
+Every issue moves: *(no label)* → `in-progress` → `done`.
+- `in-progress` is added when implementation starts on the issue (the parent gets it when its first sub-issue starts).
+- `done` replaces it when QA passes (the parent when all sub-issues are done).
+- The `/ship` orchestrator manages these transitions automatically; apply them manually (`gh issue edit <n> --add-label ...`) only when working outside `/ship`.
+- New issues are created with **no status label** — unstarted work is whatever has neither.
+
 ## Create
 
 1. Build titles and bodies from the correct templates above. For a feature, propose the full breakdown (parent + sub-issue titles) to the user **before creating anything**.
-2. Create each issue: `gh issue create --title "<title>" --body "<body>" --label "<labels>"`. For features: parent first, then backend sub-issue, then frontend sub-issue.
-3. Link each sub-issue to the parent using the sub-issues API (needs the sub-issue's database ID, not its number):
+2. Ensure the status labels exist (idempotent — errors on existing labels are fine to ignore):
+   ```
+   gh label create in-progress --color FBCA04 --description "Being worked on" 2>/dev/null
+   gh label create done --color 0E8A16 --description "QA passed, awaiting/after merge" 2>/dev/null
+   ```
+3. Create each issue: `gh issue create --title "<title>" --body "<body>" --label "<labels>"`. For features: parent first, then backend sub-issue, then frontend sub-issue.
+4. Link each sub-issue to the parent using the sub-issues API (needs the sub-issue's database ID, not its number):
    ```
    sub_id=$(gh api repos/{owner}/{repo}/issues/<sub_number> --jq .id)
    gh api repos/{owner}/{repo}/issues/<parent_number>/sub_issues -F sub_issue_id=$sub_id
    ```
    (Use `gh repo view --json owner,name` if owner/repo aren't known.)
-4. If a milestone or assignee is obvious from context, add `--milestone` / `--assignee`.
-5. Report back: parent issue number + URL and each sub-issue number + URL. Do not start coding yet unless asked.
+5. If a milestone or assignee is obvious from context, add `--milestone` / `--assignee`.
+6. Report back: parent issue number + URL and each sub-issue number + URL. Do not start coding yet unless asked.

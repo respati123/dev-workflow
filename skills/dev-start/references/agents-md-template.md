@@ -29,15 +29,18 @@ user wrote.
 Roles: `scout` (read-only recon), `pm` (BRD/PRD/issues), `coder` (implements),
 `techlead` (static review), `qa` (verifies by execution).
 
-Pipeline per feature:
-1. `pm` — BRD → PRD → parent issue + sub-issues (backend first).
-2. Per sub-issue: `scout` recon (mandatory) → `coder` implements → PR
-   (`Closes #<sub-issue>`, never the parent).
+Pipeline per feature (one sub-issue = one PR = one full cycle, sequential,
+backend first):
+1. `pm` — BRD → PRD → parent issue + sub-issues.
+2. Per sub-issue: label `in-progress` → `scout` recon (mandatory) → `coder`
+   implements → PR (`Closes #<sub-issue>`, never the parent).
 3. `techlead` reviews the diff with fresh context: BLOCKING findings go back
    to `coder` (max 3 rounds, then stop and report); `LGTM` proceeds.
 4. `qa` runs serially after LGTM: verifies every acceptance criterion by
-   execution. FAIL goes back to `coder`; PASS means ready.
-5. A human merges. Agents NEVER merge.
+   execution. FAIL goes back to `coder`; PASS → label `done`.
+5. A human merges each PR; the next sub-issue starts after the merge. The
+   parent issue is labeled `done` and closed manually when all sub-issues
+   are done. Agents NEVER merge.
 
 ## Do not
 - Do not merge PRs — merging is always manual.

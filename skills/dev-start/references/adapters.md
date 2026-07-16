@@ -34,3 +34,8 @@ Prompt/command locations per tool (for installing the workflow prompts):
 | Claude Code | `.claude/commands/*.md` |
 | Pi | `.pi/prompts/*.md` |
 | OpenCode | `.opencode/command/*.md` |
+
+Pi gotchas: project prompts in `.pi/prompts/` only load **after the project is
+trusted** in Pi, and a running Pi session must be restarted to pick up new
+prompt files. If prompts should be available across all projects, install to
+the global `~/.pi/agent/prompts/` instead.

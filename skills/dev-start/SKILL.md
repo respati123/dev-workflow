@@ -1,33 +1,23 @@
 ---
 name: dev-start
-description: Bootstrap a project for the multi-agent dev workflow (scout, pm, coder, techlead, qa). Checks git, creates agent definitions for the detected tool(s), and maps the codebase into AGENTS.md. Idempotent — safe to re-run, only fills gaps. Trigger on "dev:start", "dev start", "setup dev workflow", or "bootstrap this project".
+description: Prepare a project for the multi-agent dev workflow (scout, pm, coder, techlead, qa). Checks git and maps the codebase into AGENTS.md. Roles, prompts, and skills come from installing the dev-workflow package itself — this skill installs nothing. Trigger on "dev:start", "dev start", or "bootstrap this project".
 ---
 
 # dev-start
 
-Bootstraps a project so the multi-agent development workflow (BRD → PRD →
-issues → scout → code → review → QA) can run on it, regardless of which
-coding agent the user drives it with (Claude Code, Pi, OpenCode).
+Prepares a project so the multi-agent development workflow (BRD → PRD →
+issues → scout → code → review → QA) can run on it. The roles, prompts, and
+skills are already available globally from installing the dev-workflow
+package (see the repo README) — this skill only handles what is inherently
+per-project: git and AGENTS.md.
 
-**Idempotent by design**: every step first checks what already exists and
-only creates what's missing. Re-running must never overwrite user files.
+**Idempotent by design**: check what exists, only fill gaps, never overwrite
+user files.
 
-## Step 1 — Scout current state (read-only)
+## Step 1 — Git
 
-Check, without changing anything:
-
-- Is this a git repo? (`git rev-parse --is-inside-work-tree`) Does it have a remote?
-- Does `.agents/skills/` exist? Which skills are in it (or in `.claude/skills/`, `.pi/skills/`)?
-- Does `AGENTS.md` exist?
-- Which tool dirs exist: `.claude/`, `.pi/`, `.opencode/`?
-- Is the project empty or does it contain code?
-
-Summarize the state in a few lines before proceeding.
-
-## Step 2 — Git
-
-If not a git repo: **ask the user** whether to initialize one (never init
-silently). If yes:
+Check `git rev-parse --is-inside-work-tree`. If not a git repo: **ask the
+user** whether to initialize one (never init silently). If yes:
 
 1. `git init`
 2. Ask how to connect a remote — one question, three options:
@@ -37,29 +27,7 @@ silently). If yes:
 
 If git already exists, move on.
 
-## Step 3 — Install agent roles
-
-Read the canonical roles in [references/roles/](references/roles/) (scout,
-pm, coder, techlead, qa) and generate one wrapper per role for each tool
-detected in step 1, following the frontmatter mapping in
-[references/adapters.md](references/adapters.md). Key rules (details in the
-adapter doc):
-
-- Body is copied verbatim; only frontmatter is translated.
-- `preload-skills` is filtered to skills that actually exist in this project.
-- Existing wrapper files are never overwritten — skip and report.
-- No tool dir detectable → ask which tool(s) to target; don't generate all
-  three speculatively.
-
-Also install the workflow prompts from
-[references/prompts/](references/prompts/) (issue, ship, scout) into the
-detected tool's command directory (locations in the adapter doc), same
-never-overwrite rule. There is no separate resume prompt — `/ship <issue
-number>` detects prior work (labels, branch, PR) and resumes from the right
-step; `/scout` reports progress across all features and recommends the next
-action.
-
-## Step 4 — Map the codebase into AGENTS.md
+## Step 2 — Map the codebase into AGENTS.md
 
 - **Project has code**: delegate to the `scout` role (as a subagent if the
   tool supports it, otherwise do the recon yourself, read-only) to map
@@ -72,15 +40,9 @@ action.
   delete or rewrite existing content. Show the user the diff of what you're
   adding before writing.
 
-## Step 5 — Report
+## Step 3 — Report
 
-One compact summary: what was created, what was skipped (and why), which
-skills got preloaded into which roles, and the one-liner to start working:
-run the `pm` flow (`create-brd` → `create-prd`) for a new feature, or `/ship`
-to drive an issue end to end.
-
-## References
-
-- [roles/](references/roles/) — canonical role definitions (single source of truth)
-- [adapters.md](references/adapters.md) — per-tool frontmatter mapping + command dirs
-- [agents-md-template.md](references/agents-md-template.md) — AGENTS.md skeleton and merge rules
+A few lines: git state, what was added to AGENTS.md, and the one-liner to
+start working: run the `pm` flow (`create-brd` → `create-prd`) for a new
+feature, `/ship` to drive an issue end to end, `/scout` to see where
+everything stands.

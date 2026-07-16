@@ -2,7 +2,7 @@
 description: Drive a task end-to-end (issues -> per sub-issue: scout -> code -> PR -> review -> QA) delegating to the workflow roles, pausing only at checkpoints
 argument-hint: "<task description | PRD path | issue number>"
 ---
-Drive this task end to end: $@
+Drive this task end to end: $ARGUMENTS
 
 You are the orchestrator. Delegate each phase to the matching workflow role
 (scout, pm, coder, techlead, qa) using this tool's subagent mechanism; do the

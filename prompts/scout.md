@@ -3,7 +3,7 @@ description: Read-only progress report — where every feature and issue stands,
 argument-hint: "[issue number | keyword] (optional — empty means the whole project)"
 ---
 Report where the work stands. **Read-only**: never edit code, labels, issues,
-or PRs. Scope: $@ (empty = everything).
+or PRs. Scope: $ARGUMENTS (empty = everything).
 
 ## Gather (via gh)
 

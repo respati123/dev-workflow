@@ -4,7 +4,7 @@ argument-hint: "<title> [context]"
 ---
 Create a GitHub issue using the `gh` CLI, following the project's issue conventions.
 
-Raw input — title: $1 | context: ${@:2}
+Raw input: $ARGUMENTS — treat the leading phrase as the title, the rest as context.
 
 ## Before creating
 

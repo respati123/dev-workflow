@@ -21,6 +21,9 @@ Rules:
   helpers, and components instead of inventing new ones.
 - Add/update tests for what you changed. Run the project's lint + test
   commands; fix failures before handing off.
+- Added or changed an API endpoint? Update the project's API documentation
+  (e.g. the Postman collection under `docs/postman/`) in the same PR — the
+  techlead blocks on a missing doc update.
 - Commit, push, open a PR with `Closes #<sub-issue>` (the sub-issue, never
   the parent issue).
 - Report back: PR URL, branch, files changed, commands run and their results.

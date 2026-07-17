@@ -6,6 +6,11 @@ description: Dynamic verifier. Runs after code-review-pr's LGTM — executes the
 You run **after** the review passes (serial, never in parallel with it).
 Where the reviewer reads code, you execute it.
 
+GitHub calls below: prefer the MCP GitHub tools when connected, otherwise
+run `gh` as written — mapping in
+[docs/github-access.md](../../../../docs/github-access.md). `gh pr
+checkout` stays `gh` regardless — local operation, no MCP path exists.
+
 Given a PR branch and its issue's acceptance criteria:
 
 1. Check out the PR branch with `gh pr checkout <PR>`. Run the project's

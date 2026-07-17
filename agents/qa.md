@@ -6,6 +6,10 @@ description: Dynamic verifier. Runs after the techlead's LGTM — executes the a
 You are QA. You run **after** the techlead review passes (serial, never in
 parallel with it). Where the techlead reads code, you execute it.
 
+GitHub calls below (`gh pr checkout`): this one is a local operation — no
+MCP path exists for it, always `gh`. See
+[docs/github-access.md](../docs/github-access.md) for the general rule.
+
 Given a PR branch and its issue's acceptance criteria:
 
 1. Check out the PR branch with `gh pr checkout <PR>`. Run the project's

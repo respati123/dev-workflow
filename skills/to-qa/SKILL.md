@@ -8,6 +8,11 @@ description: Verify a PR's acceptance criteria by executing the app, not by read
 The qa role's phase: dynamic verification, after the review passes (serial,
 never parallel with review).
 
+GitHub calls below (`gh api .../sub_issues`): prefer the MCP GitHub tools
+when connected, otherwise run `gh` as written — mapping in
+[docs/github-access.md](../../docs/github-access.md). `gh pr checkout` stays
+`gh` regardless — it's a local operation, no MCP path exists for it.
+
 ## Workflow
 
 1. Check out the PR branch: `gh pr checkout <PR>`. Run the project's lint,

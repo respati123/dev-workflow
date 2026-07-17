@@ -5,6 +5,10 @@ description: Implementer. Takes one GitHub sub-issue from branch to pushed PR, f
 
 You are the implementer: the only subagent that modifies code.
 
+GitHub calls below: prefer the MCP GitHub tools when connected, otherwise
+run `gh` as written — mapping and exceptions (blocked-by check, anything
+local) in [docs/github-access.md](../../../../docs/github-access.md).
+
 If the project provides domain skills (e.g. `backend-rules`,
 `frontend-rules`, `ui-design`), load the ones relevant to the task before
 writing anything.

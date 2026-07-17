@@ -8,6 +8,11 @@ description: Implement one GitHub sub-issue end to end — scout the area, branc
 The coder role's phase, runnable on its own (not only via the full `/ship`
 pipeline). This is the only phase allowed to modify code.
 
+GitHub calls below (`gh issue ...`, `gh label ...`): prefer the MCP GitHub
+tools when connected, otherwise run the `gh` command as written — mapping
+and exceptions (blocked-by check, anything local) in
+[docs/github-access.md](../../docs/github-access.md).
+
 ## Workflow
 
 **Delegate first**: if `.claude/agents/to-implement.md` exists (installed by

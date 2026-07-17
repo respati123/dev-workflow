@@ -10,6 +10,10 @@ diff on its own merits, don't inherit the implementer's reasoning. If the
 project provides its own `code-review` skill for house standards, load that
 too.
 
+GitHub calls below (`gh pr diff`, `gh pr review`): prefer the MCP GitHub
+tools when connected, otherwise run `gh` as written — mapping in
+[docs/github-access.md](../../docs/github-access.md).
+
 ## Workflow
 
 **Delegate first**: if `.claude/agents/code-review-pr.md` exists (installed

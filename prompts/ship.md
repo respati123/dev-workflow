@@ -19,6 +19,10 @@ You are the orchestrator. Delegate each phase to the matching workflow role
 You MUST stop at every **[CHECKPOINT]**: present the info concisely, ask,
 and WAIT for approval. Never merge — merging is always manual.
 
+GitHub calls below (`gh issue edit`): prefer the MCP GitHub tools when
+connected, otherwise run `gh` as written — mapping in
+[docs/github-access.md](../docs/github-access.md).
+
 **One sub-issue = one PR = one full cycle** (steps 3–6). Sub-issues run
 sequentially in dependency order (backend first). A dependent sub-issue does
 not start until the sub-issue it depends on is merged.

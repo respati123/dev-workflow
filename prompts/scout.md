@@ -7,6 +7,12 @@ or PRs. Scope: $ARGUMENTS (empty = everything).
 
 ## Gather (via gh)
 
+Prefer the MCP GitHub tools when connected, otherwise run `gh` as written —
+mapping in [docs/github-access.md](../docs/github-access.md). Since the
+`--json` fields below (`reviewDecision`, `statusCheckRollup`) drive the
+report, confirm an MCP substitute actually returns them before trusting it
+over `gh`.
+
 1. All issues, including closed:
    `gh issue list --state all --limit 100 --json number,title,state,labels,body,url`
 2. Open PRs: `gh pr list --json number,title,url,reviewDecision,statusCheckRollup`

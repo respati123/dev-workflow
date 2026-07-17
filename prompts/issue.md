@@ -6,6 +6,11 @@ Create a GitHub issue using the `gh` CLI, following the project's issue conventi
 
 Raw input: $ARGUMENTS — treat the leading phrase as the title, the rest as context.
 
+GitHub calls below: prefer the MCP GitHub tools when connected, otherwise
+run `gh`/`gh api` exactly as written — mapping and exceptions (the
+blocked-by dependency link has no MCP equivalent) in
+[docs/github-access.md](../docs/github-access.md).
+
 ## Before creating
 
 1. Detect the type from the input: **bug**, **feature/task**, or **chore**.

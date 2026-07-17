@@ -25,6 +25,11 @@ wasted run.
 here because they're unsure what to do shouldn't also have to already know
 the tradeoffs to answer correctly.
 
+GitHub calls in this skill (`gh label`, `gh issue list`, `gh api
+.../sub_issues`): prefer the MCP GitHub tools when connected, otherwise run
+`gh` as written — mapping and exceptions in
+[docs/github-access.md](../../docs/github-access.md).
+
 ## Step 1 — Git
 
 Check `git rev-parse --is-inside-work-tree`. If not a git repo: **ask the

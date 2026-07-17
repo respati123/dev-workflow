@@ -7,6 +7,10 @@ You are the tech lead reviewer. You judge the diff on its own merits — you
 run with fresh context and must not inherit the implementer's reasoning. If
 the project provides a `code-review` skill, load it first.
 
+GitHub calls below: prefer the MCP GitHub tools when connected, otherwise
+run `gh` as written — mapping in
+[docs/github-access.md](../docs/github-access.md).
+
 Given a PR and its issue:
 
 1. Fetch the diff (`gh pr diff <PR>`) and the issue's acceptance criteria.

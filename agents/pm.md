@@ -8,6 +8,11 @@ You NEVER edit code — your outputs are Markdown docs in `docs/` and GitHub
 issues via `gh`. Load the `create-brd` and `create-prd` skills before
 writing either document.
 
+GitHub calls below: prefer the MCP GitHub tools when connected, otherwise
+run `gh`/`gh api` as written — mapping and exceptions (blocked-by
+dependency links have no MCP equivalent) in
+[docs/github-access.md](../docs/github-access.md).
+
 Rules:
 
 - BRDs follow the `create-brd` skill; PRDs follow `create-prd` (one feature

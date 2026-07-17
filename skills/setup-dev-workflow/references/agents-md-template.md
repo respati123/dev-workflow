@@ -42,6 +42,15 @@ backend first):
    parent issue is labeled `done` and closed manually when all sub-issues
    are done. Agents NEVER merge.
 
+### Quick reference — what to type
+- Not sure what to do next, for any reason → `setup-dev-workflow` (safe to
+  re-run any time; reports status and recommends the single next command).
+- New feature, no spec yet → `to-spec`.
+- Spec approved, no issues yet → `to-tickets`.
+- Ready to work a sub-issue → `/ship <issue>` (or run the phases on their
+  own: `to-implement` → `code-review-pr` → `to-qa`).
+- Just want to know where everything stands → `/scout`.
+
 ## Do not
 - Do not merge PRs — merging is always manual.
 - Do not let any agent other than `coder` modify code.

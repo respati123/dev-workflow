@@ -1,6 +1,6 @@
 ---
 name: setup-dev-workflow
-description: Prepare a project for the multi-agent dev workflow (scout, pm, coder, techlead, qa). Checks git, AGENTS.md/CLAUDE.md, and (for backend projects) docs/postman/, offering to fill each gap. On Claude Code, also installs the pipeline-phase subagents. Trigger on "setup-dev-workflow".
+description: Prepare a project for the multi-agent dev workflow (scout, pm, coder, techlead, qa), and the entry point for it — the one to run any time you don't know what to do next, on an empty project or one already in flight. Checks git, AGENTS.md/CLAUDE.md, and (for backend projects) docs/postman/, offering to fill each gap; safe to re-run, since re-running just reports current status and the single next command. Trigger on "setup-dev-workflow", or whenever the user seems unsure where to start or what to do next — "where do I start", "I'm new to this project", "help me build this", "gimana cara mulai", "bingung mulai dari mana", "project baru".
 ---
 
 # setup-dev-workflow
@@ -10,19 +10,30 @@ issues → scout → code → review → QA) can run on it. Replaces the old
 `dev-start` skill: same git + AGENTS.md groundwork, plus CLAUDE.md,
 `docs/postman/` for backend projects, and Claude Code subagent installation.
 
+Also doubles as the workflow's front door: a user with zero context on this
+project should be able to say almost anything that signals "I don't know
+what to do" and land here, on the first message of a brand new chat.
+
 **Idempotent by design**: check what exists, only fill gaps the user
-approves, never overwrite user content.
+approves, never overwrite user content. On an already-set-up project, every
+step below finds nothing left to fill and falls straight through to Step 5's
+recommendation — that's the intended "what do I do next" behavior, not a
+wasted run.
+
+**Every question below ships with a recommended default and the reasoning**
+— never a bare yes/no or an unranked list of options. Someone who landed
+here because they're unsure what to do shouldn't also have to already know
+the tradeoffs to answer correctly.
 
 ## Step 1 — Git
 
 Check `git rev-parse --is-inside-work-tree`. If not a git repo: **ask the
-user** whether to initialize one (never init silently). If yes:
-
-1. `git init`
-2. Ask how to connect a remote — one question, three options:
-   - create on GitHub: ask the repo name, then `gh repo create <name> --private --source=. --remote=origin`
-   - existing remote: ask the URL, then `git remote add origin <url>`
-   - local-only for now: skip.
+user** whether to initialize one (never init silently) — **recommend yes**:
+even an empty project benefits from tracking spec docs and every decision
+from the first commit, and a local-only repo has no real downside. If yes,
+`git init` and stop there — don't ask about a remote yet. Whether/where to
+connect GitHub is a question worth answering once the project has a
+direction (see Step 3), not on message one before anything is defined.
 
 If git already exists, move on.
 
@@ -33,14 +44,17 @@ from Step 1): skip recon — there's nothing to find. Backend = no,
 `docs/postman/` question doesn't apply.
 
 Ask **one optional question** before moving on: *"This project is empty —
-want to define it now with `to-spec` (BRD → PRD)?"*
+want to define it now with `to-spec` (BRD → PRD)? Recommended — coding
+straight from an idea usually means redoing work once real requirements
+surface; a short interview now is cheaper than a rewrite later."*
 
 - **Yes** → stop here and delegate fully to the `to-spec` skill (its normal
-  `create-brd` → `create-prd` interview). Once it's done, the approved
-  PRD/BRD is what fills AGENTS.md's Project map / Stack in Step 3 — grounded
-  in the approved doc, not guessed. This does **not** trigger the backend /
-  `docs/postman/` question even if the PRD describes a backend — that stays
-  tied to actual code existing, not to a plan (see Step 3).
+  `create-brd` → `create-prd` interview). Once it's done, the approved PRD is
+  what fills AGENTS.md's Project map in Step 3 — grounded in the approved
+  doc, not guessed; Stack still gets asked separately (Step 3), since the
+  spec deliberately doesn't pin it down. This does **not** trigger the
+  backend / `docs/postman/` question even if the PRD describes a backend —
+  that stays tied to actual code existing, not to a plan (see Step 3).
 - **No** → go to Step 3 with only AGENTS.md/CLAUDE.md to offer, filled as
   placeholders (see below).
 
@@ -62,26 +76,63 @@ Present every gap found in **one batch** — don't interrogate one at a time.
 For each, the user answers yes/no:
 
 - **AGENTS.md** missing or incomplete → fill
-  [references/agents-md-template.md](references/agents-md-template.md). The
+  [references/agents-md-template.md](references/agents-md-template.md) —
+  **recommend yes**: every other skill in this workflow (scout, to-implement,
+  code review) reads it, so skipping it means the rest of the pipeline runs
+  blind. The
   **Development workflow** section is generic (doesn't depend on this
-  project's code) and always gets filled in full. **Project map / Stack**
-  come from Step 2's recon, or from the approved BRD/PRD if the empty-project
-  `to-spec` offer was accepted. **Commands** stays `TODO` for an empty
-  project regardless — there's no real toolchain yet, that only exists once
-  `to-implement` produces the first code. If genuinely nothing is known (no
-  recon, declined `to-spec`), leave the rest as `TODO` too instead of
-  guessing. Already exists → **merge**: add only missing sections, never
-  delete or rewrite what the user wrote. Show the diff of what you're adding
-  before writing.
+  project's code) and always gets filled in full. **Project map** comes from
+  Step 2's recon, or from the approved BRD/PRD if the empty-project `to-spec`
+  offer was accepted. **Stack** comes from Step 2's recon for an existing
+  project, or from the tech-stack question below for a freshly-specced
+  greenfield one — never from the BRD/PRD themselves, they're deliberately
+  stack-agnostic. **Commands** stays `TODO` for an empty project regardless —
+  there's no real toolchain yet, that only exists once `to-implement`
+  produces the first code. If genuinely nothing is known (no recon, declined
+  `to-spec`), leave the rest as `TODO` too instead of guessing. Already
+  exists → **merge**: add only missing sections, never delete or rewrite what
+  the user wrote. Show the diff of what you're adding before writing.
+- **GitHub remote** missing, and the project now has a clear direction (an
+  existing project, or a greenfield one that just completed `to-spec`) → ask
+  how to connect one, one question, three options — **recommend "create on
+  GitHub"** unless the user already has a remote elsewhere: `to-tickets`,
+  `code-review-pr`, and `to-qa`'s parent-closing check all depend on GitHub
+  issues/PRs through `gh`, so picking local-only quietly disables most of
+  this workflow — say that plainly if the user leans that way, don't let it
+  be a silent tradeoff:
+  - create on GitHub (recommended): ask the repo name, then `gh repo create <name> --private --source=. --remote=origin`
+  - existing remote: ask the URL, then `git remote add origin <url>`
+  - local-only for now: works, but disables `to-tickets`/`to-implement`/`code-review-pr`/`to-qa` — only pick this if that's intended.
+
+  Still no direction (empty project, `to-spec` declined) → skip this
+  question — there's nothing to connect a remote *for* yet. It'll come up
+  naturally once `to-tickets` needs `gh` and finds none configured.
+- **Tech stack** unknown, and it's a greenfield project that just completed
+  `to-spec` → ask directly, but don't ask blind: skim the approved BRD/PRD
+  for signals (kind of product, expected scale, integrations mentioned) and
+  propose a stack that fits, with the one-line reasoning (e.g. "a CRUD-heavy
+  internal tool, no unusual scale — a mainstream, well-supported
+  framework/language is a safe default unless you already have a
+  preference or team expertise to favor instead"). The user still decides —
+  this narrows the field instead of leaving them to pick blind. This is the
+  one point in the flow where stack actually gets pinned down for a new
+  project — the BRD/PRD won't have it, and `to-implement` needs it before
+  writing the first line. Existing projects skip this; Step 2's recon
+  already found the real stack.
 - **CLAUDE.md** missing, and you are running as Claude Code → create it as a
-  **one-line pointer**, not a regenerated duplicate:
+  **one-line pointer**, not a regenerated duplicate — **recommend yes**: it
+  costs one line and keeps every Claude Code session grounded in AGENTS.md
+  automatically:
   ```
   @AGENTS.md
   ```
   AGENTS.md stays the single source of truth. If CLAUDE.md already exists
   (even with unrelated content), leave it untouched — it may be hand-written.
 - **`docs/postman/`** missing, and a backend was found → scaffold an empty
-  collection at `docs/postman/collection.json`:
+  collection at `docs/postman/collection.json` — **recommend yes**: it costs
+  nothing to scaffold now, and `code-review-pr` already treats a missing API
+  doc update as BLOCKING once endpoints exist, so having the file ready
+  avoids friction on the very first backend PR:
   ```json
   {
     "info": {
@@ -121,11 +172,19 @@ on your behalf.
 A few lines: git state; whether `to-spec` was run for an empty project (and
 the resulting BRD/PRD paths, if so); AGENTS.md/CLAUDE.md status;
 `docs/postman/` status; which `.claude/agents/*.md` files were created vs.
-already present (Claude Code only). Then the one-liner to start working:
+already present (Claude Code only).
 
-- New feature → `to-spec` (BRD → PRD; wraps `create-brd`/`create-prd`, which
-  are still available directly if you only need one of the two).
-- Spec approved → `to-tickets` to break it into a parent issue + sub-issues.
-- Per sub-issue → `to-implement` → `code-review-pr` → `to-qa`, or `/ship
-  <issue>` to drive the whole cycle with checkpoints.
-- `/scout` any time to see where every feature/issue currently stands.
+Then recommend exactly **one** next command — not a menu. A user who's lost
+enough to land here can't be expected to pick the right item off a list:
+
+- Repo has GitHub issues already (`gh issue list --state all --limit 1`
+  returns anything) → this project is already past spec/tickets. Run the
+  same gather-and-recommend logic as `/scout` (`prompts/scout.md`) and
+  report **its** single recommendation instead of anything below.
+- No issues yet, but an approved spec exists in `docs/prd/` → recommend
+  `to-tickets`.
+- No spec yet → recommend `to-spec` (BRD → PRD; `create-brd`/`create-prd`
+  are still available directly if only one is needed).
+
+Close with one line making the re-run behavior explicit: "not sure what to
+do later either — just say `setup-dev-workflow` again."

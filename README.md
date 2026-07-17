@@ -4,6 +4,15 @@ Multi-agent development workflow for Pi (and Claude Code). Install once,
 globally — every project gets the skills, prompts, and roles. No per-project
 generation step.
 
+## Quick start — if you don't know where to begin
+
+Say **`setup-dev-workflow`** as your first message, in any project — empty
+or already full of code, doesn't matter. It figures out what state things
+are in (no git yet? no spec? spec but no issues? issues already in flight?)
+and tells you the single next command to run. Lost again later, mid-project?
+Say it again — it's idempotent, never overwrites your work, and on an
+already-set-up project it skips straight to the recommendation.
+
 ## What's inside
 
 ```

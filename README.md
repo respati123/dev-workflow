@@ -13,10 +13,23 @@ extensions/
   subagent/     # delegation tool: spawns a fresh `pi` process per role, streaming TUI
                 # (vendored from pi's official examples/extensions/subagent)
 skills/
-  dev-start/    # per-project prep: git check + AGENTS.md mapping (installs nothing)
-  create-brd/   # business requirements doc, interview-driven
-  create-prd/   # per-feature PRD, grounded in codebase research
+  setup-dev-workflow/  # per-project prep: git, AGENTS.md/CLAUDE.md, docs/postman/,
+                       # + installs the subagents below into .claude/agents/ on Claude Code
+  create-brd/      # business requirements doc, interview-driven
+  create-prd/      # per-feature PRD, grounded in codebase research
+  to-spec/         # create-brd -> create-prd back to back
+  to-tickets/      # spec -> parent issue + sub-issues (pm)
+  to-implement/    # one sub-issue -> pushed PR (coder)
+  code-review-pr/  # static PR review, BLOCKING/LGTM (techlead)
+  to-qa/           # verify a PR by execution (qa)
 ```
+
+Each of the last four mirrors one phase of the `/ship` pipeline (see below)
+so it can be invoked on its own — resuming a stuck step, or working outside
+the full orchestrator — without needing the `agents/` role files symlinked.
+On Claude Code, `setup-dev-workflow` installs them as project-local subagents
+too (`.claude/agents/`), so they also run with isolated fresh context via the
+Agent tool.
 
 ## Install (Pi)
 
@@ -57,9 +70,10 @@ a glance. `/ship <issue>` resumes interrupted work by detecting labels,
 branches, and PRs; `/scout` reports where every feature stands and recommends
 the next action. Agents never merge.
 
-In each new project, say **"dev:start"** once: it checks git and maps the
-codebase into AGENTS.md. That's all it does — everything else is already
-installed globally.
+In each new project, say **"setup-dev-workflow"** once: it checks git,
+AGENTS.md/CLAUDE.md, and (for backend projects) `docs/postman/`, offering to
+fill any gap; on Claude Code it also installs the pipeline-phase subagents
+into `.claude/agents/`. Everything else is already installed globally.
 
 ## Editing
 

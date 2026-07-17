@@ -1,6 +1,6 @@
 # AGENTS.md template
 
-Generated/updated by `dev-start`. If the project already has an AGENTS.md,
+Generated/updated by `setup-dev-workflow`. If the project already has an AGENTS.md,
 MERGE: add only the missing sections below, never delete or rewrite what the
 user wrote.
 

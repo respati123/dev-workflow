@@ -12,6 +12,14 @@ too.
 
 ## Workflow
 
+**Delegate first**: if `.claude/agents/code-review-pr.md` exists (installed
+by `setup-dev-workflow`), spawn it via the Agent tool — `subagent_type:
+"code-review-pr"`, foreground — passing the PR number (fresh context matters
+here: don't hand it the implementer's reasoning, just the PR). Relay its
+verdict and stop; skip the steps below.
+
+**No installed subagent** (or not Claude Code): run the phase inline —
+
 1. Fetch the diff (`gh pr diff <PR>`) and the linked issue's acceptance
    criteria.
 2. Review for: correctness, criteria actually met, missing tests, edge

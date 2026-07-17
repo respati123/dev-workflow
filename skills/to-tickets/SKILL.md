@@ -13,6 +13,13 @@ where the content comes from.
 
 ## Workflow
 
+**Delegate first**: if `.claude/agents/to-tickets.md` exists (installed by
+`setup-dev-workflow`), spawn it via the Agent tool — `subagent_type:
+"to-tickets"`, foreground — passing the spec (or naming which PRD if known).
+Relay its report and stop; skip the steps below.
+
+**No installed subagent** (or not Claude Code): run the phase inline —
+
 1. Find the spec: look for the relevant PRD in `docs/prd/` (and its BRD in
    `docs/brd/` for context). If the user names one, confirm it; if none
    exists and none is named, ask which spec this is for — don't invent

@@ -10,6 +10,15 @@ pipeline). This is the only phase allowed to modify code.
 
 ## Workflow
 
+**Delegate first**: if `.claude/agents/to-implement.md` exists (installed by
+`setup-dev-workflow`), spawn it via the Agent tool — `subagent_type:
+"to-implement"`, `isolation: "worktree"` (it branches, commits, and pushes;
+keep that off the main working tree), foreground — passing the target
+sub-issue if named. Relay its report (PR URL, branch, files changed) and
+stop; skip the steps below.
+
+**No installed subagent** (or not Claude Code): run the phase inline —
+
 1. Identify the target sub-issue.
    - If the user named one, use it.
    - If not, list open issues (`gh issue list --state open --json

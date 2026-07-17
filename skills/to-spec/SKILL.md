@@ -10,6 +10,14 @@ the user doesn't have to invoke `create-brd` and `create-prd` separately.
 
 ## Workflow
 
+**Delegate first**: if `.claude/agents/to-spec.md` exists (installed by
+`setup-dev-workflow`), spawn it via the Agent tool — `subagent_type:
+"to-spec"`, foreground (you need its output before you can report back) —
+passing the feature description. Relay its report and stop; skip the steps
+below.
+
+**No installed subagent** (or not Claude Code): run the phase inline —
+
 1. Load the `create-brd` skill and run it for the feature described. It
    saves to `docs/brd/<slug>.md` and iterates with the user until approved.
 2. Once the BRD is approved, load the `create-prd` skill and run it for the

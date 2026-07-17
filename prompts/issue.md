@@ -105,18 +105,31 @@ Every issue moves: *(no label)* → `in-progress` → `done`.
    ```
    (`bug` ships with GitHub by default; create it the same way if this repo deleted it.)
 3. Create each issue: `gh issue create --title "<title>" --body "<body>" --label "<labels>"`. For features: parent first, then backend sub-issue, then frontend sub-issue.
-4. Link each sub-issue to the parent using the sub-issues API (needs the sub-issue's database ID, not its number):
+4. Link each sub-issue to the parent — `POST /repos/{owner}/{repo}/issues/{issue_number}/sub_issues`
+   (needs the sub-issue's database ID, not its number):
    ```
    sub_id=$(gh api repos/{owner}/{repo}/issues/<sub_number> --jq .id)
    gh api repos/{owner}/{repo}/issues/<parent_number>/sub_issues -F sub_issue_id=$sub_id
    ```
    (Use `gh repo view --json owner,name` if owner/repo aren't known.)
+
+   - **Already has a different parent** (e.g. resuming a `/ship` run that got
+     interrupted after a partial link) → the call 422s. Retry once with
+     `-F replace_parent=true` rather than treating it as a failure.
+   - **Secondary rate limiting**: GitHub explicitly warns that creating
+     several sub-issue links back-to-back can trigger it. If a call fails
+     with a rate-limit error (403 with a `retry-after`-style message), wait
+     a few seconds and retry that one link — don't abandon the batch.
+   - Pace the calls one at a time in issue-creation order (never fire them
+     concurrently); this alone avoids most rate-limit hits.
+
    **This step is mandatory, then verify it worked**:
    ```
    gh api repos/{owner}/{repo}/issues/<parent_number>/sub_issues --jq '.[].number'
    ```
    must list every sub-issue you created. Any missing → the link failed;
-   redo it before reporting. The `## Parent` line in the body is context for
-   agents, NOT a substitute for the native link.
+   redo it (applying the two cases above as needed) before reporting. The
+   `## Parent` line in the body is context for agents, NOT a substitute for
+   the native link.
 5. If a milestone or assignee is obvious from context, add `--milestone` / `--assignee`.
 6. Report back: parent issue number + URL and each sub-issue number + URL. Do not start coding yet unless asked.

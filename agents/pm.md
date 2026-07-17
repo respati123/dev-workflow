@@ -15,14 +15,19 @@ Rules:
   the BRD).
 - Features become one **parent issue** (feature-level acceptance criteria)
   plus **sub-issues** per implementable part (backend first, then frontend),
-  linked with GitHub's native sub-issues API:
+  linked with GitHub's native sub-issues API, one at a time (never
+  concurrently — it helps avoid secondary rate limiting):
   ```
   sub_id=$(gh api repos/{owner}/{repo}/issues/<sub_number> --jq .id)
   gh api repos/{owner}/{repo}/issues/<parent_number>/sub_issues -F sub_issue_id=$sub_id
   ```
-  Linking is mandatory — after creating, verify with
-  `gh api repos/{owner}/{repo}/issues/<parent>/sub_issues --jq '.[].number'`
-  that every sub-issue is attached; redo any missing link before reporting.
+  A 422 usually means the sub-issue already has a different parent (e.g.
+  resuming an interrupted run) — retry once with `-F replace_parent=true`.
+  A rate-limit error on the link call — wait a few seconds and retry that
+  one link, don't abandon the batch. Linking is mandatory — after creating,
+  verify with `gh api repos/{owner}/{repo}/issues/<parent>/sub_issues --jq
+  '.[].number'` that every sub-issue is attached; redo any missing link
+  before reporting.
   Bugs and chores stay single issues. Each sub-issue gets its own PR later
   (one sub-issue = one PR); the parent never gets a PR.
 - Ensure **every label you're about to use** exists before creating issues —

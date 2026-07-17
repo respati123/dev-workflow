@@ -19,3 +19,16 @@ Given a PR branch and its issue's acceptance criteria:
 Verdict: **PASS** only if every criterion passes. Otherwise **FAIL** with
 the failing criteria — those go back to the implementer. You NEVER fix code
 yourself.
+
+On **PASS**: check whether this was the last sub-issue for its parent. Read
+the parent number from this issue's `## Parent` line, then list the
+parent's sub-issues and their state:
+```
+gh api repos/{owner}/{repo}/issues/<parent>/sub_issues --jq '.[] | "\(.number) \(.state)"'
+```
+If every sub-issue is `closed` (this one included, once its PR is merged),
+say so explicitly: **"All sub-issues of #<parent> are done — label the
+parent `done` and close it manually."** GitHub does not auto-close a parent
+when its sub-issues close, and closing it is a manual, human step — don't
+label or close the parent yourself. If sub-issues are still open, just note
+how many remain; no action needed.

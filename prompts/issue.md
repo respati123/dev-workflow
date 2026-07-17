@@ -131,5 +131,18 @@ Every issue moves: *(no label)* → `in-progress` → `done`.
    redo it (applying the two cases above as needed) before reporting. The
    `## Parent` line in the body is context for agents, NOT a substitute for
    the native link.
-5. If a milestone or assignee is obvious from context, add `--milestone` / `--assignee`.
-6. Report back: parent issue number + URL and each sub-issue number + URL. Do not start coding yet unless asked.
+5. If a sub-issue depends on another (the standing rule: the frontend
+   sub-issue depends on the backend one), also create a **native**
+   blocked-by link — `POST
+   /repos/{owner}/{repo}/issues/{issue_number}/dependencies/blocked_by` —
+   not just the "Dependencies / related" prose in the body. This is what
+   lets `to-implement` (and anything else) query blocking status
+   programmatically instead of parsing text:
+   ```
+   blocker_id=$(gh api repos/{owner}/{repo}/issues/<backend_number> --jq .id)
+   gh api repos/{owner}/{repo}/issues/<frontend_number>/dependencies/blocked_by -F issue_id=$blocker_id
+   ```
+   Same secondary-rate-limit caution as step 4 applies — one call at a
+   time, retry a rate-limited call rather than skipping it.
+6. If a milestone or assignee is obvious from context, add `--milestone` / `--assignee`.
+7. Report back: parent issue number + URL and each sub-issue number + URL. Do not start coding yet unless asked.

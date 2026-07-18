@@ -148,24 +148,56 @@ For each, the user answers yes/no:
   }
   ```
 
-Skip any item the user declines. Skip the CLAUDE.md / postman checks
-entirely if their precondition (Claude Code / backend) doesn't hold — don't
-ask about them.
+- **Dev hygiene** (offer only once real code + a toolchain exist — skip for
+  an empty project) → two optional add-ons, each its own yes/no, each backed
+  by an existing skill so this skill doesn't reinvent them:
+  - **Pre-commit hooks** — recommend yes for any project with a lint/test
+    toolchain: run the `setup-pre-commit` skill (Husky + lint-staged, format
+    + typecheck + test on commit) so the `coder` role's changes are checked
+    before they ever reach a PR, shrinking the techlead's blocking findings.
+  - **Git guardrails** — recommend yes on Claude Code: run the
+    `git-guardrails-claude-code` skill to block destructive git commands
+    (`push --force`, `reset --hard`, `clean`, `branch -D`) via hooks. The
+    workflow never merges or force-pushes on the user's behalf; this makes
+    that a hard guarantee rather than a convention.
+
+Skip any item the user declines. Skip the CLAUDE.md / postman / dev-hygiene
+checks entirely if their precondition (Claude Code / backend / real code +
+toolchain) doesn't hold — don't ask about them.
 
 ## Step 4 — Claude Code subagents
 
-If (and only if) you are running as **Claude Code**: install the
-pipeline-phase subagents by copying each file from
+If (and only if) you are running as **Claude Code**: install the five
+workflow-role subagents by copying each file from
 [references/agents/](references/agents/) into `.claude/agents/` in this
 project, **skipping any that already exist** (never overwrite — the user may
 have customized one). No need to ask permission first — this only adds new
 files, nothing existing is touched:
 
-- `to-spec.md` — BRD → PRD
-- `to-tickets.md` — spec → parent issue + sub-issues
-- `to-implement.md` — one sub-issue → pushed PR
-- `code-review-pr.md` — static PR review, BLOCKING/LGTM
-- `to-qa.md` — verify a PR by execution
+- `scout.md` — read-only recon, feeds everyone
+- `pm.md` — BRD → PRD → parent issue + sub-issues (loads `to-spec`/`to-tickets`)
+- `coder.md` — one sub-issue → pushed PR (the only role that edits code)
+- `techlead.md` — static PR review, BLOCKING/LGTM, posted on the PR
+- `qa.md` — verify a PR by execution
+
+These are the exact role names `/ship` delegates to (scout → coder →
+techlead → qa), so the orchestrator resolves each phase to a real subagent
+here instead of falling back to inline work. Each runs with **fresh,
+isolated context** via the Agent tool — which matters most for `techlead`
+and `qa`: a review by the same context that wrote the code is not a review.
+
+**Run these synchronously, never in the background.** The pipeline is a chain
+of gates — `coder` must finish before `techlead` reviews its PR, `techlead`
+must LGTM before `qa` runs. Delegating in the background breaks the ordering
+and lets a later gate start against unfinished work. When `/ship` (or you)
+delegate via the Agent tool, pass `run_in_background: false` for `coder`,
+`techlead`, and `qa`. (`scout` and `pm` are also fine synchronous; the hard
+requirement is the coder → techlead → qa gate chain.)
+
+The standalone phase skills (`to-spec`, `to-tickets`, `to-implement`,
+`code-review-pr`, `to-qa`) stay available for invoking a single phase by hand
+outside `/ship` — they complement these role subagents, they don't replace
+them.
 
 If you are running as Pi or another tool, skip this step — the equivalent
 setup there is the manual symlink step in this package's README

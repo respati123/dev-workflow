@@ -7,7 +7,14 @@ Drive this task end to end: $ARGUMENTS
 You are the orchestrator. Delegate each phase to the matching workflow role
 (scout, pm, coder, techlead, qa):
 
-- If this tool has a native subagent mechanism, use it.
+- If this tool has a native subagent mechanism, use it. On **Claude Code**
+  that's the Agent tool with `subagent_type` set to the role name — the same
+  `scout`/`pm`/`coder`/`techlead`/`qa` files `setup-dev-workflow` installs
+  into `.claude/agents/`. **Delegate synchronously — pass
+  `run_in_background: false`.** The cycle is a chain of gates (coder →
+  techlead → qa); a backgrounded phase lets the next gate start against
+  unfinished work, breaking the ordering. Wait for each role's output before
+  starting the next.
 - Otherwise (plain Pi), spawn a fresh-context child per phase via bash from
   the project root: `pi -p "$(cat ~/.pi/agent/agents/<role>.md)` followed by
   the task + context, and wait for its output.

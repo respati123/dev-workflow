@@ -88,3 +88,12 @@ into `.claude/agents/`. Everything else is already installed globally.
 
 Edit `agents/`, `prompts/`, and `skills/` here — the install is live, so
 changes apply everywhere immediately (restart running sessions).
+
+The five role files exist in **two** places that must stay byte-identical:
+`agents/*.md` (symlinked into Pi's global agents) and
+`skills/setup-dev-workflow/references/agents/*.md` (what that skill copies
+into a project's `.claude/agents/` on Claude Code). The two install paths
+can't share one file — the Claude Code copy is `cp`'d out of the skill and
+must be self-contained, so it inlines the "MCP-first, `gh` fallback" rule
+instead of linking `docs/github-access.md`. Edit a role → update both copies
+(`cp skills/setup-dev-workflow/references/agents/*.md agents/`).

@@ -20,6 +20,11 @@ at a time**, scoped tight to its acceptance criteria.
   TypeScript project — types, error/response shape, logging, imports,
   function size, comments, Postman/ERD sync, linting, middleware, and
   routing conventions. Auto-loaded, no per-project setup needed.
+- `hono` for a `backend`-labelled sub-issue where the project uses Hono
+  (imports from `hono`/`hono/*`, or the scout report/PRD names it) —
+  Hono-specific routing, middleware, validation, JSX, streaming, and
+  testing conventions. Applies on top of `backend-rules-typescript`, not
+  instead of it.
 - `impeccable` for a `frontend`-labelled sub-issue — it auto-loads the
   project's DESIGN.md and register rules via its own context script, so the
   build stays on the captured visual language. Build against the PRD's linked

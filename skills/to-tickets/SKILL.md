@@ -13,12 +13,20 @@ where the content comes from.
 
 ## Workflow
 
-**Delegate first**: if `.claude/agents/to-tickets.md` exists (installed by
-`setup-dev-workflow`), spawn it via the Agent tool — `subagent_type:
-"to-tickets"`, foreground — passing the spec (or naming which PRD if known).
-Relay its report and stop; skip the steps below.
+**Delegate to the `pm` role** — this whole phase is the pm role's job. On
+Claude Code, spawn it via the Agent tool, `subagent_type: "pm"`, foreground —
+pass it the spec (or naming which PRD if known) and this skill's workflow
+below. If `pm` doesn't resolve ("subagent not installed"), don't fail or
+silently fall through — install it: copy
+`~/.claude/skills/setup-dev-workflow/references/agents/pm.md` into
+`.claude/agents/pm.md` in this project (create the directory if needed),
+then retry. Still unresolved right after installing? That's Claude Code's
+file watcher only picking up a brand-new `agents/` directory (or its first
+file) on the *next* session start — tell the user to restart Claude Code
+once, and run this phase inline for now. Relay `pm`'s report and stop; skip
+the steps below.
 
-**No installed subagent** (or not Claude Code): run the phase inline —
+**No Agent tool available at all**: run the phase inline —
 
 1. Find the spec: look for the relevant PRD in `docs/prd/` (and its BRD in
    `docs/brd/` for context). If the user names one, confirm it; if none

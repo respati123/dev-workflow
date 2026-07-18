@@ -15,6 +15,22 @@ when connected, otherwise run `gh` as written — mapping in
 
 ## Workflow
 
+**Delegate to the `qa` role** — this whole phase is the qa role's job. On
+Claude Code, spawn it via the Agent tool, `subagent_type: "qa"`, foreground —
+passing the PR number. If `qa` doesn't resolve ("subagent not installed"),
+don't fail or silently fall through — install it: copy
+`~/.claude/skills/setup-dev-workflow/references/agents/qa.md` into
+`.claude/agents/qa.md` in this project (create the directory if needed),
+then retry. Relay its verdict and stop; skip the steps below.
+
+**Still unresolved right after installing** (Claude Code's file watcher
+only picks up a brand-new `agents/` directory, or its first file, on the
+*next* session start): tell the user to restart Claude Code once. Don't run
+this phase inline as a workaround unless this context isn't the one that
+just implemented or reviewed the change — dynamic verification by the same
+context that wrote or approved the code isn't independent verification.
+Otherwise, run inline —
+
 1. Check out the PR branch: `gh pr checkout <PR>`. Run the project's lint,
    test, and e2e commands.
 2. For each acceptance criterion on the linked issue, verify it **by

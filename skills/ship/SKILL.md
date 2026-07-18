@@ -20,7 +20,17 @@ for a delegation mechanism and use the best match available, in this order:
    for each role's output before starting the next. Known bindings:
    - **Claude Code**: the Agent tool, `subagent_type` set to the role name —
      the same `scout`/`pm`/`coder`/`techlead`/`qa` files `setup-dev-workflow`
-     installs into `.claude/agents/`. Pass `run_in_background: false`.
+     installs into `.claude/agents/`. Pass `run_in_background: false`. If a
+     role doesn't resolve ("subagent not installed"), don't fail or silently
+     fall through to inline — install it: copy
+     `~/.claude/skills/setup-dev-workflow/references/agents/<role>.md` into
+     `.claude/agents/<role>.md` in this project (create the directory if it
+     doesn't exist yet), then retry. If it *still* doesn't resolve right
+     after installing, that's Claude Code's file watcher only picking up a
+     brand-new `agents/` directory (or a previously-empty one's first file)
+     on the *next* session start — tell the user to restart Claude Code once
+     for it to take effect, and run this phase inline for now instead of
+     blocking (except techlead/qa — see rung 3 below).
    - **Pi**, with this package's `extensions/subagent/` installed per the
      README: the `subagent` tool. Single mode `{agent: "<role>", task: "..."}`
      for one call; for the coder → techlead → qa sequence prefer **chain

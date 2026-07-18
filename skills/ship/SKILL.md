@@ -1,6 +1,6 @@
 ---
 name: ship
-description: Drive a task end-to-end (issues -> per sub-issue: scout -> code -> PR -> review -> QA) delegating to the workflow roles, pausing only at checkpoints. Trigger on "ship", "ship this", "drive this end to end", "build this feature end to end", or when given a task description, PRD path, or issue number to fully execute through the pipeline.
+description: Drive a task end-to-end (issues -> per sub-issue, scout -> code -> PR -> review -> QA) delegating to the workflow roles, pausing only at checkpoints. Trigger on "ship", "ship this", "drive this end to end", "build this feature end to end", or when given a task description, PRD path, or issue number to fully execute through the pipeline.
 ---
 
 # ship

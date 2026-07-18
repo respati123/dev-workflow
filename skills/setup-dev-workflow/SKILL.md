@@ -128,6 +128,25 @@ For each, the user answers yes/no:
   project — the BRD/PRD won't have it, and `to-implement` needs it before
   writing the first line. Existing projects skip this; Step 2's recon
   already found the real stack.
+
+  **If the project needs a frontend** (the BRD/PRD signals a UI, or Step 2's
+  recon found one), ask these in the same batch — `AskUserQuestion`, each
+  with a recommended option first and the one-line reasoning, never a blank
+  choice:
+  - **Framework**: React + Vite, or Next.js. Recommend **Next.js** when the
+    PRD signals SEO, server rendering, or multi-page routing; recommend
+    **React + Vite** for an internal tool/dashboard/SPA with none of
+    that — the lighter default when there's no reason to carry Next's
+    server runtime.
+  - **UI**: shadcn/ui + Tailwind, or Tailwind only. Recommend **shadcn/ui +
+    Tailwind** by default — a maintained, accessible component baseline
+    beats hand-rolling primitives — unless the project explicitly needs a
+    fully custom visual system with no pre-built components at all.
+  - **Animation**: Framer Motion whenever motion is needed. Fixed, not a
+    question — this workflow standardizes on it, so don't ask.
+
+  Record the answers in AGENTS.md's Stack section same as the base stack
+  question above.
 - **CLAUDE.md** missing, and you are running as Claude Code → create it as a
   **one-line pointer**, not a regenerated duplicate — **recommend yes**: it
   costs one line and keeps every Claude Code session grounded in AGENTS.md
@@ -160,14 +179,16 @@ For each, the user answers yes/no:
   Unlike `docs/postman/` this isn't backend-gated — any project accrues
   architectural decisions. Mirror the `docs/postman/` offer; the `create-adr`
   skill writes real ADRs from there on.
-- **Design system (PRODUCT.md / DESIGN.md)** missing, and Step 2 found a
-  frontend/UI surface → offer to run `impeccable init` + `document` to capture
-  the register, strategic context, and visual tokens once — **recommend yes**:
-  every later `impeccable shape` (pm) and frontend build (coder) auto-loads
-  these, so features stay on one visual language instead of each coder
-  reinventing it. `DESIGN.md` also becomes a "documented rule" the techlead can
-  check frontend PRs against. Skip entirely for backend-only projects — there's
-  no UI to capture.
+- **Design system (PRODUCT.md / DESIGN.md)** missing, and Step 2 (or the
+  tech-stack question above) found/confirmed a frontend/UI surface → run
+  `impeccable init` + `document` to capture the register, strategic context,
+  and visual tokens once. **Mandatory, not a yes/no** — `impeccable` is a
+  required skill for any frontend work in this workflow, not an optional
+  add-on; every later `impeccable shape` (pm) and frontend build (coder)
+  auto-loads what gets captured here, so features stay on one visual
+  language instead of each coder reinventing it. `DESIGN.md` also becomes a
+  "documented rule" the techlead can check frontend PRs against. Skip
+  entirely for backend-only projects — there's no UI to capture.
 
 - **Dev hygiene** (offer only once real code + a toolchain exist — skip for
   an empty project) → two optional add-ons, each its own yes/no, each backed

@@ -17,6 +17,10 @@ report:
    the target area. Flag anything the requested work cannot be built on top of.
 4. **Commands** — how this project is built, tested, and linted (from package
    scripts, Makefile, or CI config).
+5. **Decisions** — check `docs/adr/` and surface any Accepted ADRs that
+   constrain the target area (a mandated datastore, an established pattern, a
+   rejected approach). Implementers must not re-litigate a settled decision or
+   unknowingly violate it — flag the relevant ADR numbers.
 
 Output a concise summary — conclusions and file paths, not file dumps. Your
 report is consumed by other agents; every irrelevant line is context they

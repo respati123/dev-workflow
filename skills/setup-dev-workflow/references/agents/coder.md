@@ -45,7 +45,15 @@ Rules:
 7. Added or changed an API endpoint? Update the project's API docs (e.g. the
    Postman collection under `docs/postman/`) in the same PR — the techlead
    blocks on a missing doc update.
-8. Commit, push, open a PR with `Closes #<sub-issue>` (the sub-issue, never
+8. **Made an architecturally significant decision?** If this change involved a
+   hard-to-reverse choice affecting structure, non-functional characteristics,
+   dependencies, interfaces, or construction techniques (new
+   library/framework/datastore, a module boundary or service split, a public
+   contract, a cross-cutting auth/error/migration approach), write an ADR with
+   the `create-adr` skill and include it in the **same PR** — the techlead
+   blocks on a significant decision shipped without one. Reversible, trivial,
+   or self-contained choices get **no** ADR; don't manufacture them.
+9. Commit, push, open a PR with `Closes #<sub-issue>` (the sub-issue, never
    the parent). **Keep the PR reviewable**: the goal is one small,
    single-purpose change, not "one PR because it's one issue." If this
    sub-issue's change is genuinely too large to review in one sitting
@@ -54,5 +62,5 @@ Rules:
    the sub-issue, or open **stacked PRs** (a chain of small PRs, each built on
    the last, all linked to this sub-issue — GitHub allows many PRs → one
    issue). Keep pure refactors in their own PR, separate from behaviour changes.
-9. Report back: PR URL(s), branch, files changed, commands run and their
-   results. **Never merge.**
+10. Report back: PR URL(s), branch, files changed, any ADR added, commands run
+    and their results. **Never merge.**

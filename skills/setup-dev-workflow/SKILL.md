@@ -74,6 +74,8 @@ needs — don't run a separate detection pass for any of them:
 - **AGENTS.md exists?** Complete, or missing sections?
 - **CLAUDE.md exists?** (only matters if you are running as Claude Code)
 - **`docs/postman/` exists?** (only matters if a backend was found)
+- **`docs/adr/` exists?** (only matters if the project has real code — ADRs
+  aren't backend-specific)
 
 ## Step 3 — Offer to fill the gaps
 
@@ -147,6 +149,15 @@ For each, the user answers yes/no:
     "item": []
   }
   ```
+- **`docs/adr/`** missing, and the project has real code → scaffold the
+  directory with a seed `docs/adr/0000-record-architecture-decisions.md` (the
+  ADR that records *using ADRs*, status Accepted) — **recommend yes**: it costs
+  nothing, and `techlead`/`code-review-pr` treat an architecturally significant
+  decision shipped without an ADR as BLOCKING, so having the folder and
+  numbering convention ready avoids friction on the first significant PR.
+  Unlike `docs/postman/` this isn't backend-gated — any project accrues
+  architectural decisions. Mirror the `docs/postman/` offer; the `create-adr`
+  skill writes real ADRs from there on.
 
 - **Dev hygiene** (offer only once real code + a toolchain exist — skip for
   an empty project) → two optional add-ons, each its own yes/no, each backed
@@ -161,9 +172,9 @@ For each, the user answers yes/no:
     workflow never merges or force-pushes on the user's behalf; this makes
     that a hard guarantee rather than a convention.
 
-Skip any item the user declines. Skip the CLAUDE.md / postman / dev-hygiene
-checks entirely if their precondition (Claude Code / backend / real code +
-toolchain) doesn't hold — don't ask about them.
+Skip any item the user declines. Skip the CLAUDE.md / postman / adr /
+dev-hygiene checks entirely if their precondition (Claude Code / backend /
+real code / real code + toolchain) doesn't hold — don't ask about them.
 
 ## Step 4 — Claude Code subagents
 
@@ -208,8 +219,8 @@ on your behalf.
 
 A few lines: git state; whether `to-spec` was run for an empty project (and
 the resulting BRD/PRD paths, if so); AGENTS.md/CLAUDE.md status;
-`docs/postman/` status; which `.claude/agents/*.md` files were created vs.
-already present (Claude Code only).
+`docs/postman/` and `docs/adr/` status; which `.claude/agents/*.md` files were
+created vs. already present (Claude Code only).
 
 Then recommend exactly **one** next command — not a menu. A user who's lost
 enough to land here can't be expected to pick the right item off a list:

@@ -22,9 +22,16 @@ Given a PR and its issue:
 3. **API docs check**: if the diff adds or changes an endpoint, the project's
    API documentation (e.g. the Postman collection under `docs/postman/`) must
    be updated in the same PR — a missing doc update is a **BLOCKING** finding.
-4. Return findings grouped **BLOCKING** vs **non-blocking**, each with file,
+4. **ADR check**: if the diff makes an architecturally significant,
+   hard-to-reverse decision (a new dependency/framework/datastore, a new module
+   boundary or service split, a public interface/contract, or a cross-cutting
+   construction technique) and no ADR under `docs/adr/` is added or updated in
+   the same PR, that is a **BLOCKING** finding. A local refactor, a new field,
+   or any reversible/self-contained choice is **not** significant — do not
+   demand an ADR for those (over-documentation is its own failure mode).
+5. Return findings grouped **BLOCKING** vs **non-blocking**, each with file,
    line, and a concrete failure scenario. No blocking findings → say `LGTM`.
-5. **Post the review on the PR** so it's tracked there, not only in chat:
+6. **Post the review on the PR** so it's tracked there, not only in chat:
    BLOCKING → `gh pr review <PR> --request-changes --body "<findings>"`;
    LGTM → `gh pr review <PR> --approve --body "<summary + non-blocking notes>"`.
 

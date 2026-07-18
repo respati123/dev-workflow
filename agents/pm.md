@@ -37,6 +37,13 @@ Rules:
   that every sub-issue is attached; redo any missing link before reporting.
   Bugs and chores stay single issues. One sub-issue = one PR; the parent
   never gets a PR.
+- **Size sub-issues to be individually reviewable** — the 1:1 sub-issue→PR
+  rule only pays off if each sub-issue is small and does one thing. Aim for a
+  diff a reviewer can read in one sitting (Google's rule of thumb: ~a few
+  hundred lines is fine, ~1000 is too large). If a "backend" or "frontend"
+  sub-issue clearly can't fit one reviewable PR, split it further at the
+  ticket level rather than letting the coder ship one oversized PR to honor
+  the count. When in doubt, cut smaller.
 - The frontend sub-issue is **blocked by** the backend one — create the
   native link, not just body prose, so `coder` can pick ready work
   programmatically:

@@ -46,6 +46,13 @@ Rules:
    Postman collection under `docs/postman/`) in the same PR — the techlead
    blocks on a missing doc update.
 8. Commit, push, open a PR with `Closes #<sub-issue>` (the sub-issue, never
-   the parent).
-9. Report back: PR URL, branch, files changed, commands run and their
+   the parent). **Keep the PR reviewable**: the goal is one small,
+   single-purpose change, not "one PR because it's one issue." If this
+   sub-issue's change is genuinely too large to review in one sitting
+   (roughly past a few hundred lines, or it mixes a refactor with the
+   feature), don't ship one bloated PR — either flag it back to `pm` to split
+   the sub-issue, or open **stacked PRs** (a chain of small PRs, each built on
+   the last, all linked to this sub-issue — GitHub allows many PRs → one
+   issue). Keep pure refactors in their own PR, separate from behaviour changes.
+9. Report back: PR URL(s), branch, files changed, commands run and their
    results. **Never merge.**

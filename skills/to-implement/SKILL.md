@@ -16,15 +16,24 @@ and exceptions (blocked-by check, anything local) in
 ## Workflow
 
 **Delegate to the `coder` role** — this whole phase is the coder role's job.
-On Claude Code: spawn the `role-installer` subagent first (task `"ensure
-coder"`). `NEEDS_RESTART` → tell the user to restart Claude Code once, and
-run this phase inline for now. `READY` → delegate to `coder` via the Agent
-tool, `subagent_type: "coder"`, `isolation: "worktree"` (it branches,
-commits, and pushes; keep that off the main working tree), foreground —
-passing the target sub-issue if named; relay its report (PR URL, branch,
-files changed) and stop, skip the steps below.
+Check your toolset for a delegation mechanism, best match first:
 
-**No Agent tool available at all**: run the phase inline —
+1. **Claude Code**: spawn the `role-installer` subagent first (task `"ensure
+   coder"`). `READY` → delegate to `coder` via the Agent tool,
+   `subagent_type: "coder"`, `isolation: "worktree"` (it branches, commits,
+   and pushes; keep that off the main working tree), foreground — passing
+   the target sub-issue if named. `NEEDS_RESTART` → tell the user to
+   restart Claude Code once, and run this phase inline for now.
+2. **Pi**, with `extensions/subagent/` installed: the same idea via the
+   `subagent` tool — `{agent: "role-installer", task: "ensure coder"}`
+   first, then `{agent: "coder", task: "...", cwd: "<worktree path>"}` on
+   `READY`. Pi's `subagent` tool has no `isolation` flag, so set up the
+   worktree yourself (`git worktree add`) before delegating and pass its
+   path as `cwd` — same reason as the Claude Code case.
+3. **No native delegation tool, but you can spawn a fresh instance of
+   yourself non-interactively**: spawn one via bash with `coder`'s role
+   file plus the task, and wait for its output.
+4. **Neither available**: run the phase inline —
 
 1. Identify the target sub-issue.
    - If the user named one, use it.

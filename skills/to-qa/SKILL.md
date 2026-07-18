@@ -15,30 +15,47 @@ when connected, otherwise run `gh` as written — mapping in
 
 ## Workflow
 
-**Delegate to the `qa` role** — this whole phase is the qa role's job. On
-Claude Code: spawn the `role-installer` subagent first (task `"ensure
-qa"`).
+**Delegate to the `qa` role** — this whole phase is the qa role's job. Check
+your toolset for a delegation mechanism, best match first:
 
-- `READY` → delegate to `qa` via the Agent tool, `subagent_type: "qa"`,
-  foreground — passing the PR number. Relay its verdict and stop; skip the
-  steps below.
-- `NEEDS_RESTART` → tell the user to restart Claude Code once. Don't run
-  this phase inline as a workaround unless this context isn't the one that
-  just implemented or reviewed the change — dynamic verification by the
-  same context that wrote or approved the code isn't independent
-  verification. Otherwise, run inline —
+1. **Claude Code**: spawn the `role-installer` subagent first (task `"ensure
+   qa"`). `READY` → delegate to `qa` via the Agent tool, `subagent_type:
+   "qa"`, foreground — passing the PR number. `NEEDS_RESTART` → tell the
+   user to restart Claude Code once; don't run inline as a workaround unless
+   this context isn't the one that just implemented or reviewed the
+   change — dynamic verification by the same context that wrote or approved
+   the code isn't independent verification.
+2. **Pi**, with `extensions/subagent/` installed: the same idea via the
+   `subagent` tool — `{agent: "role-installer", task: "ensure qa"}` first,
+   then `{agent: "qa", task: "..."}` on `READY`.
+3. **No native delegation tool, but you can spawn a fresh instance of
+   yourself non-interactively**: spawn one via bash with `qa`'s role file
+   plus the task, and wait for its output.
+4. **Neither available, and this context is independent of the
+   implementation/review**: run the phase inline —
 
 1. Check out the PR branch: `gh pr checkout <PR>`. Run the project's lint,
    test, and e2e commands.
-2. For each acceptance criterion on the linked issue, verify it **by
+2. **CI status**: check `gh pr checks <PR>` (or `statusCheckRollup`). Still
+   running → wait and re-check. Failed → a finding, same as a local
+   failure, even if the local run passed.
+3. A failing test → re-run up to **2 more times, hard cap**. Consistently
+   fails → genuine **FAIL**. Inconsistent across attempts → report
+   **FLAKY** separately (which test, attempts, pattern) instead of quietly
+   calling it PASS — it doesn't block this PR by itself, but never hide it.
+4. For each acceptance criterion on the linked issue, verify it **by
    execution** — run the flow, hit the endpoint, observe the output. Reading
    the code is not verification.
-3. Report a checklist: each criterion PASS/FAIL with the evidence (command +
-   observed output). Anything you couldn't execute is UNVERIFIED, not PASS.
-4. Verdict: **PASS** only if every criterion passes; otherwise **FAIL** with
-   the failing criteria listed. Never fix code yourself — failures go back
-   to whoever's implementing.
-5. On **PASS**: check whether this was the last sub-issue for its parent.
+5. Report a checklist: each criterion PASS/FAIL with the evidence (command +
+   observed output), CI status, and any FLAKY tests. Anything you couldn't
+   execute is UNVERIFIED, not PASS.
+6. Verdict: **PASS** only if every criterion passes AND CI is green (or no
+   CI configured); otherwise **FAIL** with the failing criteria/CI check
+   listed. Never fix code yourself. **Invoked standalone (not via `ship`)**:
+   on FAIL, this skill doesn't auto-loop back — tell the user which
+   issue/PR needs `to-implement` re-run with this failure as context, then
+   `to-qa` again once it's pushed.
+7. On **PASS**: check whether this was the last sub-issue for its parent.
    Read the parent number from this issue's `## Parent` line, then list the
    parent's sub-issues and their state:
    ```

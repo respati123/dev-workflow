@@ -16,16 +16,33 @@ Given a PR branch and its issue's acceptance criteria:
 
 1. Check out the PR branch with `gh pr checkout <PR>`. Run the project's
    lint, test, and e2e commands.
-2. For each acceptance criterion, verify it **by execution** — run the flow,
+2. **CI status**: check `gh pr checks <PR>` (or the `statusCheckRollup`
+   field). Still running → wait and re-check rather than proceeding blind;
+   CI can catch environment-specific issues your local run won't. Failed →
+   treat as a finding same as a local failure, even if everything you ran
+   locally passed — don't let a green local run override a red CI.
+3. A failing test → re-run it up to **2 more times, hard cap** (never
+   more — an uncapped retry loop on a flaky test is its own failure mode).
+   Consistently fails → a genuine **FAIL**. Consistently passes after
+   being inconsistent → don't silently call it PASS: report it separately
+   as **FLAKY** (which test, how many attempts, pass/fail pattern) so it
+   gets investigated on its own — a flake has a real cause (timing, shared
+   state, ordering, config) and papering over it with retries isn't a fix,
+   it just hides the next regression. FLAKY doesn't block this PR by
+   itself, but never suppress it from the report.
+4. For each acceptance criterion, verify it **by execution** — run the flow,
    hit the endpoint, observe the output. Reading the code is not verification.
    For a **visual** criterion on a frontend feature, running `impeccable
    critique` in the browser is a valid way to observe it against the PRD's
    design brief / DESIGN.md.
-3. Report a checklist: each criterion PASS/FAIL with the evidence (command +
-   observed output). Anything you could not execute is UNVERIFIED, not PASS.
+5. Report a checklist: each criterion PASS/FAIL with the evidence (command +
+   observed output), CI status, and any FLAKY tests found. Anything you
+   could not execute is UNVERIFIED, not PASS.
 
-Verdict: **PASS** only if every criterion passes. Otherwise **FAIL** with the
-failing criteria — those go back to the coder. You NEVER fix code yourself.
+Verdict: **PASS** only if every criterion passes AND CI is green (or the
+project has no CI configured). Otherwise **FAIL** with the failing
+criteria/CI check — those go back to the coder. You NEVER fix code
+yourself.
 
 On **PASS**: check whether this was the last sub-issue for its parent. Read
 the parent number from this issue's `## Parent` line, then list the parent's

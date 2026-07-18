@@ -34,22 +34,35 @@ object type, except for a component with one or two trivial primitive
 props. Optional props get a default, not a runtime `undefined` check
 scattered through the body.
 
-## State management
+## MVVM: View / ViewModel separation
 
-Prefer the simplest tool that covers the need: `useState`/`useReducer` for
-component-local state, lifted only as far as the components that actually
-need it. For state shared across many components, or for server data,
-follow whatever this project already uses (check the scout report) — don't
-introduce a second state-management library alongside an existing one.
-Server/remote data specifically should go through a dedicated data-fetching
-layer (e.g. a query library) rather than hand-rolled `fetch` + `useEffect` +
-`useState`, so loading/error/caching aren't reimplemented per component.
+Every component with non-trivial logic splits into a **View** (the
+component — rendering only) and a **ViewModel** (a custom hook owning the
+logic, e.g. `useUserProfileViewModel()` for `UserProfile`).
 
-## No deep prop drilling
-
-Passing the same prop through more than 2-3 levels of components that don't
-use it themselves is a signal to use Context or the project's state
-management tool instead of threading it manually.
+- The ViewModel always returns exactly `{ states, handlers }`:
+  - `states` — everything the view renders: local reducer state, data-
+    endpoint results, and any state-management store slice the ViewModel
+    consumes, merged into one flat object.
+  - `handlers` — every user-interaction entry point (click, submit, change,
+    ...). Every value under `handlers` is a function — nothing else belongs
+    there.
+- Internally, the ViewModel is **stateless business logic driven by a
+  `useReducer`**, not scattered `useState` calls — state transitions go
+  through reducer actions, not ad-hoc setters spread across the hook.
+- **Data fetching** (the data endpoint/API call) lives inside the
+  ViewModel — the component never calls a fetch/query hook directly.
+- **State management** (a shared store, if the project uses one) is also
+  read from and dispatched to inside the ViewModel, then folded into
+  `states`/`handlers` — the component never talks to the store directly.
+- The View receives `{ states, handlers }` and does nothing but render —
+  no business logic, no data fetching, no reducer, no store access inside
+  the component itself.
+- Passing `states`/`handlers` down more than 2-3 levels to a nested
+  presentational component that doesn't need the rest? Pass just the slice
+  it needs, not the whole object — and past that depth, reconsider whether
+  the nested component should own its own ViewModel instead of inheriting
+  one from an ancestor.
 
 ## Imports
 
@@ -70,7 +83,19 @@ flags.
 Component tests via Testing Library (React Testing Library), asserting on
 rendered output and user-facing behavior — not implementation details
 (internal state, private methods). Mock network calls at the boundary
-(e.g. MSW) rather than mocking the data-fetching hook itself.
+(e.g. MSW) rather than mocking the data-fetching hook itself. A ViewModel's
+reducer logic can be tested directly (pure function, no rendering needed)
+separately from the component tests above.
+
+## E2E testing
+
+Cover critical user journeys end-to-end (login, checkout, the core flow a
+feature exists for) — not implementation detail, and not every component
+combination. One E2E test per critical journey is usually enough; resist
+adding more just because a flow exists — that's what the component tests
+above are for. Use Playwright unless the project already has a different
+E2E harness in place; assert on user-visible outcomes (rendered text, URL,
+visible state), never on internal implementation.
 
 ## No redundant components/hooks
 

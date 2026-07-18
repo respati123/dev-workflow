@@ -40,10 +40,27 @@ Otherwise, run inline —
    cases, scope creep, and violations of the project's documented rules.
 3. **API docs check**: if the diff adds or changes an endpoint, the
    project's API docs (e.g. `docs/postman/`) must be updated in the same
-   PR — a missing doc update is BLOCKING.
-4. Group findings **BLOCKING** vs **non-blocking**, each with file, line,
+   PR, with both a positive and a negative example request for the
+   affected endpoint — a missing doc update, or one with only the happy
+   path, is **BLOCKING**.
+4. **Data model check**: if the diff adds or changes a table/schema and
+   the project keeps an `ERD.md`, it must be updated in the same PR — a
+   missing update is **BLOCKING**.
+5. **ADR check**: if the diff makes an architecturally significant,
+   hard-to-reverse decision (a new dependency/framework/datastore, a new
+   module boundary or service split, a public interface/contract, or a
+   cross-cutting construction technique) and no ADR under `docs/adr/` is
+   added or updated in the same PR, that's **BLOCKING**. A local refactor,
+   a new field, or any reversible/self-contained choice is not significant
+   — don't demand an ADR for those.
+6. **Security check** (per `coding-principles`): string-concatenated/
+   interpolated SQL instead of parameterized queries, a hardcoded secret or
+   credential, a non-crypto RNG for a token/ID/nonce, or a resource access
+   with no per-resource authorization check are each **BLOCKING** — a
+   targeted check for these specific red flags, not an open-ended audit.
+7. Group findings **BLOCKING** vs **non-blocking**, each with file, line,
    and a concrete failure scenario. No blocking findings → `LGTM`.
-5. Post the review on the PR itself:
+8. Post the review on the PR itself:
    BLOCKING → `gh pr review <PR> --request-changes --body "<findings>"`;
    LGTM → `gh pr review <PR> --approve --body "<summary + non-blocking notes>"`.
 

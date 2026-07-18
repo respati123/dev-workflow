@@ -52,9 +52,12 @@ branch, files changed) and stop; skip the steps below.
    feature-level context.
 4. Scout first: read the target area's structure, conventions, and existing
    contracts before writing anything — reuse what's already there instead of
-   inventing new patterns. If the project provides domain skills
-   (`backend-rules`, `frontend-rules`, `ui-design`, etc.), load the ones
-   relevant to this task too.
+   inventing new patterns. Load the same skills `coder.md` does: always
+   `coding-principles`; `backend-rules-typescript` (+ `hono` if the project
+   uses it) for a `backend`-labelled TypeScript sub-issue;
+   `frontend-rules-typescript` + `impeccable` for a `frontend`-labelled one.
+   Non-TypeScript backend, or the project has its own domain skills
+   (`backend-rules`, `frontend-rules`, `ui-design`)? Those take precedence.
 5. `git fetch origin` and branch `feat/<issue>-<slug>` or
    `fix/<issue>-<slug>` off the up-to-date default branch — never a stale
    local copy, a dependent sub-issue needs previously merged work underneath it.
@@ -63,7 +66,10 @@ branch, files changed) and stop; skip the steps below.
 7. Add/update tests for what changed. Run the project's lint and test
    commands; fix failures before handing off.
 8. Added or changed an API endpoint? Update the project's API docs (e.g.
-   `docs/postman/`) in the same PR.
+   `docs/postman/`) in the same PR, with both a positive and a negative
+   example request. Added or changed a table/schema, and the project keeps
+   an `ERD.md`? Update it too. Both are BLOCKING findings in `techlead`'s
+   review if missed.
 9. Commit, push, open a PR with `Closes #<sub-issue>` (the sub-issue, never
    the parent).
 10. Report: PR URL, branch, files changed, commands run and their results.

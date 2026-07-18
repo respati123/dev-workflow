@@ -68,8 +68,13 @@ Rules:
 6. Add/update tests for what changed. Run the project's lint + test commands;
    fix failures before handing off.
 7. Added or changed an API endpoint? Update the project's API docs (e.g. the
-   Postman collection under `docs/postman/`) in the same PR — the techlead
-   blocks on a missing doc update.
+   Postman collection under `docs/postman/`) in the same PR, with both a
+   positive and a negative example request for the affected endpoint — the
+   techlead blocks on a missing doc update, or one with only the happy path.
+   Added or changed a table/schema, and the project keeps an `ERD.md`?
+   Update it in the same PR too — same BLOCKING treatment. Both apply
+   regardless of stack; `backend-rules-typescript` repeats these for
+   TypeScript backends, it doesn't originate them.
 8. **Made an architecturally significant decision?** If this change involved a
    hard-to-reverse choice affecting structure, non-functional characteristics,
    dependencies, interfaces, or construction techniques (new

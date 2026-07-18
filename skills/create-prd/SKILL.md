@@ -40,10 +40,13 @@ Unlike `create-brd`, the research that matters here is **this repo**, not the
 web — the BRD already established the external/business context. Look at:
 - Existing similar features (UI patterns, routes, components) to know what
   conventions to follow rather than invent new ones.
-- The relevant domain skill if it exists (e.g. `ui-design` for anything
-  user-facing, `frontend-rules`/`backend-rules` for contract details —
-  wherever this project keeps them: `.agents/skills/`, `.claude/skills/`,
-  or `.pi/skills/`).
+- The relevant coding-rules skill for contract/convention details:
+  `backend-rules-typescript` (+ `hono` if used) or `frontend-rules-typescript`
+  for a TypeScript project, or the project's own `backend-rules`/
+  `frontend-rules`/`ui-design` if it has one instead (`.agents/skills/`,
+  `.claude/skills/`, or `.pi/skills/`) — same skills `coder` loads, so the
+  PRD's functional detail doesn't ask for something the coding rules would
+  block later.
 - Existing API endpoints/data model touching this area, so the PRD's
   functional detail matches what's actually feasible instead of guessing.
 

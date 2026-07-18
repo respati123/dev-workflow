@@ -9,31 +9,40 @@ Drive the given task (a description, a PRD path, or an issue number) end to
 end.
 
 You are the orchestrator. Delegate each phase to the matching workflow role
-(scout, pm, coder, techlead, qa):
+(scout, pm, coder, techlead, qa). This skill is written to run on **any**
+agentic harness, not just the ones named below — check your current toolset
+for a delegation mechanism and use the best match available, in this order:
 
-- **Claude Code**: use the Agent tool with `subagent_type` set to the role
-  name — the same `scout`/`pm`/`coder`/`techlead`/`qa` files
-  `setup-dev-workflow` installs into `.claude/agents/`. Pass
-  `run_in_background: false` — never background a gate.
-- **Pi with the `subagent` tool available** (this package's
-  `extensions/subagent/`, installed per the README): use it — single mode
-  `{agent: "<role>", task: "..."}` for one call. For the coder → techlead →
-  qa gate sequence, prefer **chain mode**
-  (`{chain: [{agent, task}, {agent, task}, ...]}`), using `{previous}` in a
-  later step's `task` to hand it the prior step's output (e.g. the PR URL
-  into techlead's task, the review verdict into qa's). Chain mode already
-  runs each step to completion before starting the next, so the gate
-  ordering holds for free — don't reach for `tasks` (parallel mode) on this
-  pipeline. Default `agentScope` (`"user"`) already finds the roles at
-  `~/.pi/agent/agents/`.
-- **Plain Pi, no `subagent` tool installed**: spawn a fresh-context child per
-  phase via bash from the project root: `pi -p "$(cat
-  ~/.pi/agent/agents/<role>.md)` followed by the task + context, and wait
-  for its output before starting the next phase.
-- Only if none of the above works, do the phase inline yourself — except
-  **techlead and qa, which MUST run with fresh context** (a review by the
-  same context that wrote the code is not a review); if you can't get fresh
-  context for them, stop and tell the user.
+1. **A native subagent/sub-task tool in your toolset** — one call per role,
+   always **synchronous** (never backgrounded, never parallel, for this
+   pipeline): the cycle is a chain of gates (coder → techlead → qa) and a
+   backgrounded phase lets the next gate start against unfinished work. Wait
+   for each role's output before starting the next. Known bindings:
+   - **Claude Code**: the Agent tool, `subagent_type` set to the role name —
+     the same `scout`/`pm`/`coder`/`techlead`/`qa` files `setup-dev-workflow`
+     installs into `.claude/agents/`. Pass `run_in_background: false`.
+   - **Pi**, with this package's `extensions/subagent/` installed per the
+     README: the `subagent` tool. Single mode `{agent: "<role>", task: "..."}`
+     for one call; for the coder → techlead → qa sequence prefer **chain
+     mode** (`{chain: [{agent, task}, {agent, task}, ...]}`), using
+     `{previous}` in a later step's `task` to hand it the prior step's
+     output (e.g. the PR URL into techlead's task). Chain mode already awaits
+     each step before the next, so the gate ordering holds for free — don't
+     use `tasks` (parallel mode) here. Default `agentScope` (`"user"`) finds
+     the roles at `~/.pi/agent/agents/`.
+   - **Any other harness** with an equivalent delegation tool: bind it the
+     same way — one role per call, synchronous, each step's output threaded
+     into the next.
+2. **No native delegation tool, but you can spawn a fresh instance of
+   yourself non-interactively** (a headless/print/`-p`-style flag): spawn one
+   per phase via bash from the project root, passing that role's file (e.g.
+   `~/.pi/agent/agents/<role>.md`, or wherever your install keeps the five
+   role files) plus the task + context, and wait for its output before
+   starting the next phase.
+3. **Neither is available**: do the phase inline yourself — except
+   **techlead and qa, which MUST run with fresh context** (a review by the
+   same context that wrote the code is not a review); if you can't get fresh
+   context for them, stop and tell the user.
 
 You MUST stop at every **[CHECKPOINT]**: present the info concisely, ask,
 and WAIT for approval. Never merge — merging is always manual.

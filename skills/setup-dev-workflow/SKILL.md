@@ -189,8 +189,19 @@ hold — don't ask about them.
 
 ## Step 4 — Claude Code subagents
 
-If (and only if) you are running as **Claude Code**: install the five
-workflow-role subagents by copying each file from
+If (and only if) you are running as **Claude Code**:
+
+**First check whether the roles are already installed globally.** If the user
+keeps them in their user scope — `~/.claude/agents/*.md` or a subfolder like
+`~/.claude/agents/dev-workflow/*.md` (Claude Code discovers agents recursively;
+the name comes from each file's `name:` frontmatter, not its path) — then
+`scout`/`pm`/`coder`/`techlead`/`qa` already resolve in **every** project and a
+project-local copy is redundant. Check for the five `name:` values across
+`~/.claude/agents/` (recursively). If all five are already present globally,
+**skip the copy entirely** and just report "roles already installed globally".
+Only copy the ones that are genuinely missing.
+
+Otherwise, install the five workflow-role subagents by copying each file from
 [references/agents/](references/agents/) into `.claude/agents/` in this
 project, **skipping any that already exist** (never overwrite — the user may
 have customized one). No need to ask permission first — this only adds new
@@ -230,7 +241,8 @@ on your behalf.
 
 A few lines: git state; whether `to-spec` was run for an empty project (and
 the resulting BRD/PRD paths, if so); AGENTS.md/CLAUDE.md status;
-`docs/postman/`, `docs/adr/`, and PRODUCT.md/DESIGN.md status; which
+`docs/postman/`, `docs/adr/`, and PRODUCT.md/DESIGN.md status; and the role
+subagents' state — "already installed globally", or which project-local
 `.claude/agents/*.md` files were created vs. already present (Claude Code only).
 
 Then recommend exactly **one** next command — not a menu. A user who's lost

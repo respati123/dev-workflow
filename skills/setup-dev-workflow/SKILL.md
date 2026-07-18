@@ -232,6 +232,20 @@ The standalone phase skills (`to-spec`, `to-tickets`, `to-implement`,
 outside `/ship` — they complement these role subagents, they don't replace
 them.
 
+**Also install the three workflow slash commands** (`/ship`, `/scout`,
+`/issue`) — without this they have no command file to resolve to anywhere,
+which is why `/ship` can report as "not detected" even after the roles above
+are installed. Same idempotent check: look in `~/.claude/commands/` first —
+if `ship.md`, `scout.md`, and `issue.md` already resolve there, skip (already
+available in every project). Otherwise copy each missing one from
+[references/commands/](references/commands/) into `.claude/commands/` in
+this project:
+
+- `ship.md` — the orchestrator: drives a task through scout → coder →
+  techlead → qa, pausing only at checkpoints
+- `scout.md` — read-only progress report across issues/PRs
+- `issue.md` — create a well-structured GitHub issue
+
 If you are running as Pi or another tool, skip this step — the equivalent
 setup there is the manual symlink step in this package's README
 (`ln -s .../agents/*.md ~/.pi/agent/agents/`), which this skill does not do
@@ -241,9 +255,12 @@ on your behalf.
 
 A few lines: git state; whether `to-spec` was run for an empty project (and
 the resulting BRD/PRD paths, if so); AGENTS.md/CLAUDE.md status;
-`docs/postman/`, `docs/adr/`, and PRODUCT.md/DESIGN.md status; and the role
+`docs/postman/`, `docs/adr/`, and PRODUCT.md/DESIGN.md status; the role
 subagents' state — "already installed globally", or which project-local
-`.claude/agents/*.md` files were created vs. already present (Claude Code only).
+`.claude/agents/*.md` files were created vs. already present; and the same for
+the `/ship`, `/scout`, `/issue` commands — "already available globally", or
+which `.claude/commands/*.md` files were created vs. already present (Claude
+Code only).
 
 Then recommend exactly **one** next command — not a menu. A user who's lost
 enough to land here can't be expected to pick the right item off a list:

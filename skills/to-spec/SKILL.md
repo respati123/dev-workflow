@@ -10,6 +10,26 @@ the user doesn't have to invoke `create-brd` and `create-prd` separately.
 
 ## Workflow
 
+### Step 0 — Size check
+
+Before running anything, size the ask the way `scout` would: how many
+files/components does this actually touch, is it one concern or several,
+does it introduce a new user-facing flow or just adjust an existing one?
+
+- **Small** (1-2 files, one concern, no new flow) — a BRD/PRD is overhead
+  that won't earn its cost. Recommend skipping straight to a plain issue
+  (`issue` skill) + `to-implement` instead, and say why in one line
+  ("this reads like a 1-file fix — recommend `issue` + `to-implement`
+  instead of a full BRD/PRD. Still want the spec?"). If the user confirms
+  they still want the spec, proceed with the workflow below — explicit
+  request wins.
+- **Medium/large** (3+ files, a new flow, cross-cutting concern) — proceed
+  with the workflow below without asking; this is what `to-spec` is for.
+
+Don't turn this into an investigation — one line of judgment, not a scout
+pass. If genuinely unsure, default to running the workflow: a BRD too many
+costs a rewrite of prose, a missing one costs a rebuild of code.
+
 **Delegate first**: if `.claude/agents/to-spec.md` exists (installed by
 `setup-dev-workflow`), spawn it via the Agent tool — `subagent_type:
 "to-spec"`, foreground (you need its output before you can report back) —

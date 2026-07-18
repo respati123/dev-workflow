@@ -1,8 +1,12 @@
 ---
-description: Drive a task end-to-end (issues -> per sub-issue: scout -> code -> PR -> review -> QA) delegating to the workflow roles, pausing only at checkpoints
-argument-hint: "<task description | PRD path | issue number>"
+name: ship
+description: Drive a task end-to-end (issues -> per sub-issue: scout -> code -> PR -> review -> QA) delegating to the workflow roles, pausing only at checkpoints. Trigger on "ship", "ship this", "drive this end to end", "build this feature end to end", or when given a task description, PRD path, or issue number to fully execute through the pipeline.
 ---
-Drive this task end to end: $ARGUMENTS
+
+# ship
+
+Drive the given task (a description, a PRD path, or an issue number) end to
+end.
 
 You are the orchestrator. Delegate each phase to the matching workflow role
 (scout, pm, coder, techlead, qa):
@@ -28,7 +32,7 @@ and WAIT for approval. Never merge — merging is always manual.
 
 GitHub calls below (`gh issue edit`): prefer the MCP GitHub tools when
 connected, otherwise run `gh` as written — mapping in
-[docs/github-access.md](../docs/github-access.md).
+[docs/github-access.md](../../docs/github-access.md).
 
 **One sub-issue = one PR = one full cycle** (steps 3–6). Sub-issues run
 sequentially in dependency order (backend first). A dependent sub-issue does

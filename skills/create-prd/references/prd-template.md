@@ -10,8 +10,10 @@ Fill every section. If something genuinely doesn't apply, write
 **Date:** [YYYY-MM-DD] | **Version:** 0.1
 
 ## Overview
-One paragraph: what this feature does, for whom, in one sentence a non-technical
-stakeholder could repeat back correctly.
+Lead with the **problem**, then the solution. One sentence on the user problem
+this solves (link to the BRD for the full statement rather than restating it),
+then one sentence on what this feature does, for whom — phrased so a
+non-technical stakeholder could repeat it back correctly.
 
 ## Goal (tied to BRD)
 Which BRD goal/metric this feature moves, and how. If it doesn't clearly tie
@@ -35,14 +37,37 @@ Numbered against the BRD where there's a direct link (BRD FR-2 → PRD FR-2.1):
 - States to cover: empty, loading, error, success, partial data.
 - Reference existing patterns/components used (name them) rather than
   describing new ones from scratch, unless this feature genuinely needs one.
-- i18n: list any new user-facing strings that need translation keys (no
-  hardcoded copy — see root AGENTS.md).
+
+## Non-Functional Requirements
+Release requirements a prototype can't carry and the coder won't build (nor QA
+verify) unless written down. Fill only what applies; otherwise `N/A — [why]`.
+Pull the concrete bar from the repo's AGENTS.md, not generic "shall be fast and
+secure" filler.
+- **Performance:** measurable targets that matter here (e.g. "list renders
+  <200ms for 1k rows", "endpoint p95 <300ms"), or `N/A — [why]`.
+- **Security / authorization:** who may call/see this, authz rules, sensitive
+  data handling, or `N/A — [why]`.
+- **Accessibility:** keyboard nav, focus, labels/contrast for anything
+  user-facing, or `N/A — [why]`.
+- **i18n:** new user-facing strings needing translation keys — no hardcoded
+  copy (see root AGENTS.md), or `N/A — [why]`.
+
+## Analytics / Instrumentation
+So the BRD's success metric is actually measurable and `qa` can verify the
+outcome *moved*, not just that the feature renders. Name the event(s)/log(s) to
+emit and the property/metric each feeds. If this is a table-stakes/compliance
+feature with no measured outcome, write `N/A — [why]` rather than inventing an
+event.
+- [event name] — fired when [action], feeds [metric from BRD]
 
 ## Data & API Impact
 From step 3's codebase research — what this feature touches technically:
 - Existing endpoints reused: [method + path]
 - New/changed endpoints needed: [method + path, one-line purpose]
 - Data model changes: [new fields/tables, or "none"]
+- **Rollout / rollback:** for risky changes only (schema migration, feature
+  flag, backfill, phased release) — how it ships safely and how to undo it.
+  Plain additive feature → `N/A`.
 
 ## Edge Cases & Error Handling
 | Case | Expected behavior |
@@ -61,9 +86,15 @@ checkable (every FR should appear at least once):
 ## Dependencies
 Other features, APIs, or teams this needs before it can ship.
 
+## Assumptions
+Things the coder will **proceed on** that could turn out wrong (e.g. "assuming
+IDR-only", "assuming existing auth middleware covers this route"). State them so
+a wrong one surfaces early instead of after implementation. Distinct from Open
+Questions: assumptions don't block, they're just risky-if-wrong.
+
 ## Open Questions
-Anything still unresolved — don't silently assume on things that change scope
-or UX meaningfully.
+Anything still unresolved that **blocks** or could change scope/UX meaningfully —
+don't silently assume on these.
 
 ## References
 Linked BRD, code files/patterns inspected during research (step 3).

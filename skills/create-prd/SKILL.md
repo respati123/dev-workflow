@@ -68,6 +68,14 @@ open, in one clear batch. Typical gaps worth asking explicitly:
 - What's explicitly out of scope for *this* PRD (separate from the BRD's
   overall out-of-scope — a PRD can narrow further)
 - Any UX decision that isn't already covered by this repo's design system
+- **Non-functional requirements that actually apply** — a real performance
+  target, an authorization rule, an accessibility need. Don't pad with generic
+  "shall be fast and secure"; ask only where a concrete bar exists (pull from
+  AGENTS.md), and write `N/A — [why]` for the rest. These matter because the
+  `coder` builds only what's written and `qa` verifies only what's written.
+- **Instrumentation** — if the BRD's success metric is a real outcome, what
+  event(s) must the feature emit so the metric is measurable and QA can verify
+  it moved? Skip for table-stakes/compliance features with no measured outcome.
 
 If the BRD or codebase already answers something confidently, state the
 assumption instead of re-asking ("Following the existing transaction-row

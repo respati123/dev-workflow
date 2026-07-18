@@ -11,21 +11,29 @@ end.
 You are the orchestrator. Delegate each phase to the matching workflow role
 (scout, pm, coder, techlead, qa):
 
-- If this tool has a native subagent mechanism, use it. On **Claude Code**
-  that's the Agent tool with `subagent_type` set to the role name — the same
-  `scout`/`pm`/`coder`/`techlead`/`qa` files `setup-dev-workflow` installs
-  into `.claude/agents/`. **Delegate synchronously — pass
-  `run_in_background: false`.** The cycle is a chain of gates (coder →
-  techlead → qa); a backgrounded phase lets the next gate start against
-  unfinished work, breaking the ordering. Wait for each role's output before
-  starting the next.
-- Otherwise (plain Pi), spawn a fresh-context child per phase via bash from
-  the project root: `pi -p "$(cat ~/.pi/agent/agents/<role>.md)` followed by
-  the task + context, and wait for its output.
-- Only if neither works, do the phase inline yourself — except **techlead
-  and qa, which MUST run with fresh context** (a review by the same context
-  that wrote the code is not a review); if you can't get fresh context for
-  them, stop and tell the user.
+- **Claude Code**: use the Agent tool with `subagent_type` set to the role
+  name — the same `scout`/`pm`/`coder`/`techlead`/`qa` files
+  `setup-dev-workflow` installs into `.claude/agents/`. Pass
+  `run_in_background: false` — never background a gate.
+- **Pi with the `subagent` tool available** (this package's
+  `extensions/subagent/`, installed per the README): use it — single mode
+  `{agent: "<role>", task: "..."}` for one call. For the coder → techlead →
+  qa gate sequence, prefer **chain mode**
+  (`{chain: [{agent, task}, {agent, task}, ...]}`), using `{previous}` in a
+  later step's `task` to hand it the prior step's output (e.g. the PR URL
+  into techlead's task, the review verdict into qa's). Chain mode already
+  runs each step to completion before starting the next, so the gate
+  ordering holds for free — don't reach for `tasks` (parallel mode) on this
+  pipeline. Default `agentScope` (`"user"`) already finds the roles at
+  `~/.pi/agent/agents/`.
+- **Plain Pi, no `subagent` tool installed**: spawn a fresh-context child per
+  phase via bash from the project root: `pi -p "$(cat
+  ~/.pi/agent/agents/<role>.md)` followed by the task + context, and wait
+  for its output before starting the next phase.
+- Only if none of the above works, do the phase inline yourself — except
+  **techlead and qa, which MUST run with fresh context** (a review by the
+  same context that wrote the code is not a review); if you can't get fresh
+  context for them, stop and tell the user.
 
 You MUST stop at every **[CHECKPOINT]**: present the info concisely, ask,
 and WAIT for approval. Never merge — merging is always manual.

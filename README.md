@@ -17,13 +17,16 @@ already-set-up project it skips straight to the recommendation.
 
 ```
 agents/    # the five roles: scout, pm, coder, techlead, qa
-prompts/   # /issue, /ship, /scout — slash commands
+prompts/   # /issue, /scout — slash commands; ship.md is a thin redirect to
+           # the `ship` skill, kept only so bare /ship still works on Pi
+           # (Pi's skills register as /skill:name, not /name — see skills/ship/)
 extensions/
   subagent/     # delegation tool: spawns a fresh `pi` process per role, streaming TUI
                 # (vendored from pi's official examples/extensions/subagent)
 skills/
   setup-dev-workflow/  # per-project prep: git, AGENTS.md/CLAUDE.md, docs/postman/,
                        # + installs the subagents below into .claude/agents/ on Claude Code
+  ship/            # orchestrator: drives a task through scout -> coder -> techlead -> qa
   create-brd/      # business requirements doc, interview-driven
   create-prd/      # per-feature PRD, grounded in codebase research
   to-spec/         # create-brd -> create-prd back to back

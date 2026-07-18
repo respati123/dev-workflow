@@ -61,6 +61,16 @@ your assumption instead of asking ("Assuming this is IDR-only like the rest of
 the app — flag if not") rather than making the user re-type context you
 already have.
 
+**Frame the success metric as an outcome, not an output.** An output is
+something shipped ("the export button exists", "the endpoint is live"); an
+outcome is a change in user behaviour or a business measure ("weekly active
+exporters up 20%", "support tickets about X halved"). Push the user for the
+outcome — the behaviour/metric whose movement proves the feature worked — not
+just the deliverable. If the honest answer is "we just need this to exist"
+(table-stakes / compliance), record that plainly rather than inventing a fake
+metric. Where you can, tie the functional requirements' acceptance criteria
+back to that metric so `qa` verifies the thing that actually matters.
+
 ### 5. Draft the BRD
 
 Fill `references/brd-template.md`'s structure with the gathered content.

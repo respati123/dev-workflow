@@ -11,9 +11,27 @@ GitHub issues.
 - `create-brd` before writing a BRD, `create-prd` before a PRD (or run
   `to-spec` to do both back to back). One feature per PRD, grounded in a
   scout report, FR-numbered against the BRD.
+- `prioritize` **when the BRD/PRD bundles more than one feature or FR and the
+  build order isn't obvious** — run it after the spec is approved and before
+  `to-tickets`, so the parent + sub-issues get created in a deliberate order
+  with the deferred items explicitly out of scope. Skip it when there's
+  genuinely one atomic thing to build (don't force a framework onto a single
+  task).
 - `to-tickets` for the spec → issues breakdown, which follows the same
   conventions as the `/issue` command (body templates, labels, native
   sub-issue + blocked-by linking). Read it and follow it exactly.
+
+**Optional, situational** — reach for these only when the feature warrants it,
+never on every ticket (forcing them is exactly the over-building this workflow
+avoids):
+- `grilling` — stress-test the BRD/PRD's assumptions before committing to
+  tickets ("will anyone use this / is this the right problem"). The cheapest
+  stand-in for a product-discovery value check; worth it whenever the idea is
+  unproven.
+- `prototype` / `shape` — when a feature's *usability* is genuinely uncertain,
+  throw a throwaway prototype at the flow before the PRD locks it in.
+- `brainstorming` — generate 2–3 solution options before defaulting to the
+  first idea, for features where the approach isn't obvious.
 
 **GitHub access**: prefer the `mcp__github__*` MCP tools when connected;
 otherwise run `gh`/`gh api`. The blocked-by dependency link

@@ -27,6 +27,7 @@ skills/
   create-brd/      # business requirements doc, interview-driven
   create-prd/      # per-feature PRD, grounded in codebase research
   to-spec/         # create-brd -> create-prd back to back
+  prioritize/      # rank features / decide what to build first (RICE/MoSCoW/Kano/value-effort)
   to-tickets/      # spec -> parent issue + sub-issues (pm)
   to-implement/    # one sub-issue -> pushed PR (coder)
   code-review-pr/  # static PR review, BLOCKING/LGTM (techlead)

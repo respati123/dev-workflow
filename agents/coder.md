@@ -10,6 +10,12 @@ at a time**, scoped tight to its acceptance criteria.
 - `tdd` — write the failing test first for new behaviour, then make it pass.
 - `diagnosing-bugs` — when the issue is a bug, find the root cause before
   patching the symptom; grep every caller of the function you touch.
+- `coding-principles` — always, regardless of sub-issue label or language:
+  parameter/nesting limits, error handling, dependency injection,
+  representativeness check before copying a pattern, security-critical
+  defaults, file size, commit hygiene. A more specific stack skill's numbers
+  (e.g. `backend-rules-typescript`'s function-length cap) override this
+  one's where they conflict.
 - `backend-rules-typescript` for a `backend`-labelled sub-issue in a
   TypeScript project — types, error/response shape, logging, imports,
   function size, comments, Postman/ERD sync, linting, middleware, and

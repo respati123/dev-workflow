@@ -34,9 +34,15 @@ Given a PR and its issue:
    the same PR, that is a **BLOCKING** finding. A local refactor, a new field,
    or any reversible/self-contained choice is **not** significant — do not
    demand an ADR for those (over-documentation is its own failure mode).
-6. Return findings grouped **BLOCKING** vs **non-blocking**, each with file,
+6. **Security check** (per `coding-principles`): string-concatenated/
+   interpolated SQL instead of parameterized queries, a hardcoded secret or
+   credential, a non-crypto RNG used for a token/ID/nonce, or a resource
+   access with no per-resource authorization check are each a **BLOCKING**
+   finding. This is a targeted check for these specific red flags, not an
+   open-ended security audit — don't block on stylistic security opinions.
+7. Return findings grouped **BLOCKING** vs **non-blocking**, each with file,
    line, and a concrete failure scenario. No blocking findings → say `LGTM`.
-7. **Post the review on the PR** so it's tracked there, not only in chat:
+8. **Post the review on the PR** so it's tracked there, not only in chat:
    BLOCKING → `gh pr review <PR> --request-changes --body "<findings>"`;
    LGTM → `gh pr review <PR> --approve --body "<summary + non-blocking notes>"`.
 

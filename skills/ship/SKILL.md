@@ -106,7 +106,9 @@ Pick the next sub-issue in dependency order:
 
 ## Step 6 — Sub-issue done  [CHECKPOINT]
 - Swap labels: `gh issue edit <n> --remove-label in-progress --add-label done`.
-- Present: PR URL, review rounds used, QA checklist.
+- Present: PR URL, review rounds used, QA checklist — including CI status
+  and any FLAKY tests `qa` flagged. A FLAKY report doesn't block merging by
+  itself, but the user merging manually should see it, not just a bare PASS.
 - **STOP. Ask the user to merge the PR manually** (merging closes the
   sub-issue via `Closes`). Once merged, loop back to step 3 for the next
   sub-issue.

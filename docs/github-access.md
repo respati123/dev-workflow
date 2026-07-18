@@ -16,6 +16,7 @@ either way.
 | `gh label create ...`                                            | `label_write`                           |
 | `gh pr diff <PR>`                                                 | `pull_request_read` (get_diff)          |
 | `gh pr review <PR> --approve/--request-changes --body ...`       | `pull_request_review_write`             |
+| `gh pr checks <PR>` / `gh pr view --json statusCheckRollup` (CI status, used by `qa`/`techlead`/`code-review-pr`) | `pull_request_read` (check it returns check-run/status data, not just the diff — see the rule right below) |
 | `gh api .../issues/<parent>/sub_issues -F sub_issue_id=...` (link)| `sub_issue_write`                       |
 
 **Before trusting an MCP result, check it actually returns what the next

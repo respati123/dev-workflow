@@ -35,6 +35,13 @@ Given a PR and its issue:
    BLOCKING → `gh pr review <PR> --request-changes --body "<findings>"`;
    LGTM → `gh pr review <PR> --approve --body "<summary + non-blocking notes>"`.
 
+For a `frontend` PR in a project that has a DESIGN.md, you *may* run
+`impeccable audit` on the diff (static a11y / responsive / theming /
+anti-pattern scan). Its findings are **non-blocking** — surface them as
+non-blocking notes — unless they violate a rule the project's DESIGN.md
+documents, which falls under your existing "documented rules" check. This is
+situational, not a mandatory gate on every frontend PR.
+
 You review **statically** — you do not run the app (qa does that after you,
 serially) and you NEVER edit code. Blocking findings go back to the coder via
 the orchestrator, never fixed by you.

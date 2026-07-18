@@ -37,6 +37,10 @@ Numbered against the BRD where there's a direct link (BRD FR-2 → PRD FR-2.1):
 - States to cover: empty, loading, error, success, partial data.
 - Reference existing patterns/components used (name them) rather than
   describing new ones from scratch, unless this feature genuinely needs one.
+- **Design / Prototype:** link to the confirmed `impeccable shape` design brief
+  the coder builds against — inline it if compact (3–5 bullets), or save to
+  `docs/design/<feature>.md` and link. `N/A` for backend-only features or UI
+  fully covered by existing conventions / the project DESIGN.md.
 
 ## Non-Functional Requirements
 Release requirements a prototype can't carry and the coder won't build (nor QA

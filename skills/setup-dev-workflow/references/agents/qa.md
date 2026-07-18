@@ -19,6 +19,9 @@ Given a PR branch and its issue's acceptance criteria:
    lint, test, and e2e commands.
 2. For each acceptance criterion, verify it **by execution** — run the flow,
    hit the endpoint, observe the output. Reading the code is not verification.
+   For a **visual** criterion on a frontend feature, running `impeccable
+   critique` in the browser is a valid way to observe it against the PRD's
+   design brief / DESIGN.md.
 3. Report a checklist: each criterion PASS/FAIL with the evidence (command +
    observed output). Anything you could not execute is UNVERIFIED, not PASS.
 

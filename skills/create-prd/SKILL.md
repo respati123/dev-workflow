@@ -81,6 +81,12 @@ If the BRD or codebase already answers something confidently, state the
 assumption instead of re-asking ("Following the existing transaction-row
 pattern for this list — flag if this needs a different layout").
 
+For a feature with a **frontend surface**, the design isn't settled in prose
+here — the `pm` runs `impeccable shape` to produce a confirmed design brief,
+which fills the template's "Design / Prototype" field so the coder builds
+against a concrete target, not just this document's text. Backend-only
+features leave that field `N/A`.
+
 ### 5. Draft the PRD
 
 Fill `references/prd-template.md`. Write acceptance criteria as testable

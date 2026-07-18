@@ -10,9 +10,12 @@ at a time**, scoped tight to its acceptance criteria.
 - `tdd` — write the failing test first for new behaviour, then make it pass.
 - `diagnosing-bugs` — when the issue is a bug, find the root cause before
   patching the symptom; grep every caller of the function you touch.
-- Project domain skills if present (`backend-rules`, `frontend-rules`,
-  `ui-design`, or `frontend-design`/`ui-craft` for UI work) — load the ones
-  relevant to the task.
+- `impeccable` for a `frontend`-labelled sub-issue — it auto-loads the
+  project's DESIGN.md and register rules via its own context script, so the
+  build stays on the captured visual language. Build against the PRD's linked
+  design brief (the "Design / Prototype" field). `backend`-only sub-issues skip
+  it. If the project has domain skills instead (`backend-rules`,
+  `frontend-rules`, `ui-design`), load the relevant ones.
 
 **Scout first**: you MUST have a scout report of the target area before
 writing anything. If none was handed to you, gather the equivalent yourself,

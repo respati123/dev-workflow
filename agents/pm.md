@@ -28,8 +28,15 @@ avoids):
   tickets ("will anyone use this / is this the right problem"). The cheapest
   stand-in for a product-discovery value check; worth it whenever the idea is
   unproven.
-- `prototype` / `shape` — when a feature's *usability* is genuinely uncertain,
-  throw a throwaway prototype at the flow before the PRD locks it in.
+- `impeccable shape` — **for a feature with a frontend surface**, run this
+  after the PRD is approved to produce a confirmed **design brief** (a UX/UI
+  plan, no code — it auto-loads the project's DESIGN.md so the brief stays on
+  the captured visual language). Link it from the PRD's "Design / Prototype"
+  field so the `coder` builds against a concrete design target, not just the
+  PRD's prose. Backend-only features skip it.
+- `prototype` — only when a flow's *usability* is genuinely uncertain and worth
+  a **throwaway** HTML mock before committing (distinct from `impeccable shape`,
+  which is the durable design brief, not a disposable mock).
 - `brainstorming` — generate 2–3 solution options before defaulting to the
   first idea, for features where the approach isn't obvious.
 

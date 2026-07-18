@@ -76,6 +76,8 @@ needs — don't run a separate detection pass for any of them:
 - **`docs/postman/` exists?** (only matters if a backend was found)
 - **`docs/adr/` exists?** (only matters if the project has real code — ADRs
   aren't backend-specific)
+- **Frontend surface present, and PRODUCT.md / DESIGN.md?** (only matters if
+  the recon found UI code — a frontend framework, components, routes, styles)
 
 ## Step 3 — Offer to fill the gaps
 
@@ -158,6 +160,14 @@ For each, the user answers yes/no:
   Unlike `docs/postman/` this isn't backend-gated — any project accrues
   architectural decisions. Mirror the `docs/postman/` offer; the `create-adr`
   skill writes real ADRs from there on.
+- **Design system (PRODUCT.md / DESIGN.md)** missing, and Step 2 found a
+  frontend/UI surface → offer to run `impeccable init` + `document` to capture
+  the register, strategic context, and visual tokens once — **recommend yes**:
+  every later `impeccable shape` (pm) and frontend build (coder) auto-loads
+  these, so features stay on one visual language instead of each coder
+  reinventing it. `DESIGN.md` also becomes a "documented rule" the techlead can
+  check frontend PRs against. Skip entirely for backend-only projects — there's
+  no UI to capture.
 
 - **Dev hygiene** (offer only once real code + a toolchain exist — skip for
   an empty project) → two optional add-ons, each its own yes/no, each backed
@@ -173,8 +183,9 @@ For each, the user answers yes/no:
     that a hard guarantee rather than a convention.
 
 Skip any item the user declines. Skip the CLAUDE.md / postman / adr /
-dev-hygiene checks entirely if their precondition (Claude Code / backend /
-real code / real code + toolchain) doesn't hold — don't ask about them.
+design-system / dev-hygiene checks entirely if their precondition (Claude Code
+/ backend / real code / frontend surface / real code + toolchain) doesn't
+hold — don't ask about them.
 
 ## Step 4 — Claude Code subagents
 
@@ -219,8 +230,8 @@ on your behalf.
 
 A few lines: git state; whether `to-spec` was run for an empty project (and
 the resulting BRD/PRD paths, if so); AGENTS.md/CLAUDE.md status;
-`docs/postman/` and `docs/adr/` status; which `.claude/agents/*.md` files were
-created vs. already present (Claude Code only).
+`docs/postman/`, `docs/adr/`, and PRODUCT.md/DESIGN.md status; which
+`.claude/agents/*.md` files were created vs. already present (Claude Code only).
 
 Then recommend exactly **one** next command — not a menu. A user who's lost
 enough to land here can't be expected to pick the right item off a list:

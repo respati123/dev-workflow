@@ -18,19 +18,14 @@ for a delegation mechanism and use the best match available, in this order:
    pipeline): the cycle is a chain of gates (coder → techlead → qa) and a
    backgrounded phase lets the next gate start against unfinished work. Wait
    for each role's output before starting the next. Known bindings:
-   - **Claude Code**: the Agent tool, `subagent_type` set to the role name —
-     the same `scout`/`pm`/`coder`/`techlead`/`qa` files `setup-dev-workflow`
-     installs into `.claude/agents/`. Pass `run_in_background: false`. If a
-     role doesn't resolve ("subagent not installed"), don't fail or silently
-     fall through to inline — install it: copy
-     `~/.claude/skills/setup-dev-workflow/references/agents/<role>.md` into
-     `.claude/agents/<role>.md` in this project (create the directory if it
-     doesn't exist yet), then retry. If it *still* doesn't resolve right
-     after installing, that's Claude Code's file watcher only picking up a
-     brand-new `agents/` directory (or a previously-empty one's first file)
-     on the *next* session start — tell the user to restart Claude Code once
-     for it to take effect, and run this phase inline for now instead of
-     blocking (except techlead/qa — see rung 3 below).
+   - **Claude Code**: before each role, spawn the `role-installer` subagent
+     (`subagent_type: "role-installer"`, task `"ensure <role>"`) — it
+     checks/installs the role in its own context, off `run_in_background:
+     false`, and reports one line: `READY` or `NEEDS_RESTART`.
+     `NEEDS_RESTART` → tell the user to restart Claude Code once, and run
+     this phase inline for now instead of blocking (except techlead/qa — see
+     rung 3 below). `READY` → delegate to `<role>` itself, `subagent_type`
+     set to the role name, `run_in_background: false`.
    - **Pi**, with this package's `extensions/subagent/` installed per the
      README: the `subagent` tool. Single mode `{agent: "<role>", task: "..."}`
      for one call; for the coder → techlead → qa sequence prefer **chain

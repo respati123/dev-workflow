@@ -17,22 +17,18 @@ tools when connected, otherwise run `gh` as written — mapping in
 ## Workflow
 
 **Delegate to the `techlead` role** — this whole phase is the techlead
-role's job. On Claude Code, spawn it via the Agent tool, `subagent_type:
-"techlead"`, foreground — passing the PR number (fresh context matters
-here: don't hand it the implementer's reasoning, just the PR). If `techlead`
-doesn't resolve ("subagent not installed"), don't fail or silently fall
-through — install it: copy
-`~/.claude/skills/setup-dev-workflow/references/agents/techlead.md` into
-`.claude/agents/techlead.md` in this project (create the directory if
-needed), then retry. Relay its verdict and stop; skip the steps below.
+role's job. On Claude Code: spawn the `role-installer` subagent first (task
+`"ensure techlead"`).
 
-**Still unresolved right after installing** (Claude Code's file watcher
-only picks up a brand-new `agents/` directory, or its first file, on the
-*next* session start): tell the user to restart Claude Code once. Don't run
-this phase inline as a workaround unless this context did **not** write the
-diff being reviewed — a review by the same context that wrote the code is
-not a review, so faking fresh context defeats the point of this gate.
-Otherwise, run inline —
+- `READY` → delegate to `techlead` via the Agent tool, `subagent_type:
+  "techlead"`, foreground — passing the PR number (fresh context matters
+  here: don't hand it the implementer's reasoning, just the PR). Relay its
+  verdict and stop; skip the steps below.
+- `NEEDS_RESTART` → tell the user to restart Claude Code once. Don't run
+  this phase inline as a workaround unless this context did **not** write
+  the diff being reviewed — a review by the same context that wrote the
+  code is not a review, so faking fresh context defeats the point of this
+  gate. Otherwise, run inline —
 
 1. Fetch the diff (`gh pr diff <PR>`) and the linked issue's acceptance
    criteria.

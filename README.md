@@ -17,6 +17,10 @@ already-set-up project it skips straight to the recommendation.
 
 ```
 agents/    # the five roles: scout, pm, coder, techlead, qa
+           # + role-installer: a 6th, utility-only agent every phase skill
+           # delegates to first, so the "is this role installed?" check runs
+           # in its own isolated context instead of bloating every phase
+           # skill's own text with the same paragraph six times over
 prompts/   # /issue, /scout — slash commands; ship.md is a thin redirect to
            # the `ship` skill, kept only so bare /ship still works on Pi
            # (Pi's skills register as /skill:name, not /name — see skills/ship/)
@@ -84,6 +88,12 @@ a glance. `/ship <issue>` resumes interrupted work by detecting labels,
 branches, and PRs; `/scout` reports where every feature stands and recommends
 the next action. Agents never merge.
 
+There's also a 6th agent, `role-installer` — not a workflow role, a utility
+every phase skill delegates to before delegating to one of the five above:
+it checks whether that role actually resolves on Claude Code and installs it
+on the spot if not, entirely in its own context, so none of the phase
+skills' own text has to carry that check-and-install logic.
+
 In each new project, say **"setup-dev-workflow"** once: it checks git,
 AGENTS.md/CLAUDE.md, and (for backend projects) `docs/postman/`, offering to
 fill any gap; on Claude Code it also installs the pipeline-phase subagents
@@ -94,11 +104,12 @@ into `.claude/agents/`. Everything else is already installed globally.
 Edit `agents/`, `prompts/`, and `skills/` here — the install is live, so
 changes apply everywhere immediately (restart running sessions).
 
-The five role files exist in **two** places that must stay byte-identical:
-`agents/*.md` (symlinked into Pi's global agents) and
-`skills/setup-dev-workflow/references/agents/*.md` (what that skill copies
-into a project's `.claude/agents/` on Claude Code). The two install paths
-can't share one file — the Claude Code copy is `cp`'d out of the skill and
-must be self-contained, so it inlines the "MCP-first, `gh` fallback" rule
-instead of linking `docs/github-access.md`. Edit a role → update both copies
-(`cp skills/setup-dev-workflow/references/agents/*.md agents/`).
+The six agent files (five roles + `role-installer`) exist in **two** places
+that must stay byte-identical: `agents/*.md` (symlinked into Pi's global
+agents) and `skills/setup-dev-workflow/references/agents/*.md` (what that
+skill copies into a project's `.claude/agents/` on Claude Code). The two
+install paths can't share one file — the Claude Code copy is `cp`'d out of
+the skill and must be self-contained, so it inlines the "MCP-first, `gh`
+fallback" rule instead of linking `docs/github-access.md`. Edit a role →
+update both copies (`cp skills/setup-dev-workflow/references/agents/*.md
+agents/`).

@@ -16,18 +16,13 @@ and exceptions (blocked-by check, anything local) in
 ## Workflow
 
 **Delegate to the `coder` role** — this whole phase is the coder role's job.
-On Claude Code, spawn it via the Agent tool, `subagent_type: "coder"`,
-`isolation: "worktree"` (it branches, commits, and pushes; keep that off the
-main working tree), foreground — passing the target sub-issue if named. If
-`coder` doesn't resolve ("subagent not installed"), don't fail or silently
-fall through — install it: copy
-`~/.claude/skills/setup-dev-workflow/references/agents/coder.md` into
-`.claude/agents/coder.md` in this project (create the directory if needed),
-then retry. Still unresolved right after installing? That's Claude Code's
-file watcher only picking up a brand-new `agents/` directory (or its first
-file) on the *next* session start — tell the user to restart Claude Code
-once, and run this phase inline for now. Relay `coder`'s report (PR URL,
-branch, files changed) and stop; skip the steps below.
+On Claude Code: spawn the `role-installer` subagent first (task `"ensure
+coder"`). `NEEDS_RESTART` → tell the user to restart Claude Code once, and
+run this phase inline for now. `READY` → delegate to `coder` via the Agent
+tool, `subagent_type: "coder"`, `isolation: "worktree"` (it branches,
+commits, and pushes; keep that off the main working tree), foreground —
+passing the target sub-issue if named; relay its report (PR URL, branch,
+files changed) and stop, skip the steps below.
 
 **No Agent tool available at all**: run the phase inline —
 

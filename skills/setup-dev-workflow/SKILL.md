@@ -216,13 +216,13 @@ If (and only if) you are running as **Claude Code**:
 keeps them in their user scope — `~/.claude/agents/*.md` or a subfolder like
 `~/.claude/agents/dev-workflow/*.md` (Claude Code discovers agents recursively;
 the name comes from each file's `name:` frontmatter, not its path) — then
-`scout`/`pm`/`coder`/`techlead`/`qa` already resolve in **every** project and a
-project-local copy is redundant. Check for the five `name:` values across
-`~/.claude/agents/` (recursively). If all five are already present globally,
-**skip the copy entirely** and just report "roles already installed globally".
-Only copy the ones that are genuinely missing.
+`scout`/`pm`/`coder`/`techlead`/`qa`/`role-installer` already resolve in
+**every** project and a project-local copy is redundant. Check for the six
+`name:` values across `~/.claude/agents/` (recursively). If all six are
+already present globally, **skip the copy entirely** and just report "roles
+already installed globally". Only copy the ones that are genuinely missing.
 
-Otherwise, install the five workflow-role subagents by copying each file from
+Otherwise, install the six workflow-role subagents by copying each file from
 [references/agents/](references/agents/) into `.claude/agents/` in this
 project, **skipping any that already exist** (never overwrite — the user may
 have customized one). No need to ask permission first — this only adds new
@@ -233,6 +233,9 @@ files, nothing existing is touched:
 - `coder.md` — one sub-issue → pushed PR (the only role that edits code)
 - `techlead.md` — static PR review, BLOCKING/LGTM, posted on the PR
 - `qa.md` — verify a PR by execution
+- `role-installer.md` — utility agent the other five phase skills delegate to
+  first, to check/install a role in its own isolated context instead of
+  inlining that logic into every phase skill's own text
 
 These are the exact role names `/ship` delegates to (scout → coder →
 techlead → qa), so the orchestrator resolves each phase to a real subagent

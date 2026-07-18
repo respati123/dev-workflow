@@ -23,19 +23,20 @@ Figure out what the BRD is for: feature/product name, one-line description of
 what it does and who it's for. If the user already stated this when invoking
 the skill, don't re-ask — confirm your understanding in one line and move on.
 
-### 2. Web research (always, before interviewing)
+### 2. Research (always, before interviewing)
 
-Search the web for the specific domain/topic (not "how to write a BRD" —
-that's process, you already know it). You're looking for: how similar
-features/products are typically scoped, standard requirements or compliance
-concerns for that domain, common pitfalls, what competitors do. Use `WebSearch`
-(and `WebFetch` for promising pages).
+Invoke the `research` skill on the specific domain/topic (not "how to write a
+BRD" — that's process, you already know it). Ask it to investigate: how
+similar features/products are typically scoped, standard requirements or
+compliance concerns for that domain, common pitfalls, what competitors do.
+It runs as a background agent and saves findings to a Markdown file — read
+that file before moving on to step 4.
 
 This is what lets step 4 ask sharp questions instead of generic template
 questions — e.g. for a "recurring transactions" feature, research surfaces
 real edge cases (timezone handling, month-end dates like the 31st, failed
-retries) that a generic interview would miss. Keep a short list of the sources
-you used — they go in the BRD's References section.
+retries) that a generic interview would miss. Carry the research file's
+sources into the BRD's References section.
 
 ### 3. Fold in any raw material
 

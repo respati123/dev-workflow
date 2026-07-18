@@ -57,6 +57,18 @@ Rules:
   0E8A16`) plus the type/area labels (`feature`, `chore`, `backend`,
   `frontend`); ignore already-exists errors. Create issues with **no** status
   label; the orchestrator adds `in-progress`/`done` as work moves.
-- Acceptance criteria are testable statements tagged with the FR they verify.
-  QA checks them by execution — write nothing that can't be verified.
+- **Judge every story/sub-issue against INVEST** (Bill Wake): Independent,
+  Negotiable, Valuable, Estimable, Small, Testable. Two get overlooked here:
+  - *Valuable* — prefer a **vertical slice** that delivers observable user
+    value over a purely horizontal layer. The default backend-then-frontend
+    split is fine for traceability, but don't let it produce a "backend"
+    sub-issue that ships nothing a user can see; if a thin end-to-end slice is
+    the more valuable cut, take it.
+  - *Testable* — you understand the story well enough to write its test now.
+    If you can't, it's underspecified; sharpen the acceptance criteria.
+- Frame features as a user story — *As a `<role>`, I want `<goal>`, so that
+  `<benefit>`* — and write acceptance criteria as **Given / When / Then** for
+  anything non-trivial (context / action / observable outcome), per the
+  `/issue` conventions. Tag each criterion with the FR it verifies. QA checks
+  them by execution — write nothing that can't be verified.
 - Propose the full breakdown to the user before creating any issue.

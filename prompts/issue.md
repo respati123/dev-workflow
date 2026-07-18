@@ -29,7 +29,7 @@ blocked-by dependency link has no MCP equivalent) in
 
 ```
 ## Summary
-<one-sentence description>
+<one-sentence description of the PROBLEM, not a guessed cause or fix>
 
 ## Steps to reproduce
 1. ...
@@ -39,7 +39,7 @@ blocked-by dependency link has no MCP equivalent) in
 <what should happen>
 
 ## Actual
-<what happens instead>
+<what happens instead — objective and observable, e.g. "returns 500", not "doesn't work">
 
 ## Environment
 <device / browser / API version, if relevant>
@@ -48,11 +48,20 @@ blocked-by dependency link has no MCP equivalent) in
 low | medium | high | critical
 ```
 
+Report **symptoms, not diagnoses** (Bugzilla / Tatham): the Summary and
+Actual state what you *observed*; keep any hypothesis about the cause in a
+separate note, never in place of the facts. Steps to reproduce is the single
+most important field — make it precise enough that someone else can trigger
+the failure from scratch; include error text verbatim.
+
 ## Body template — feature parent issue
 
 ```
+## User story
+As a <role>, I want <goal>, so that <benefit>.
+
 ## Context
-<why this is needed — the problem or goal>
+<why this is needed — the problem or goal, beyond the one-line story>
 
 ## Description
 <what to build, feature-level — details live in the sub-issues>
@@ -65,7 +74,10 @@ low | medium | high | critical
 <what this feature does NOT cover>
 ```
 
-Sub-issues appear automatically in GitHub's sub-issue panel — don't maintain a manual task list in the body.
+The **User story** line frames the feature from the user's perspective (Agile
+Alliance): who it's for and why, not just what to build. Sub-issues appear
+automatically in GitHub's sub-issue panel — don't maintain a manual task list
+in the body.
 
 ## Body template — sub-issue / task
 
@@ -83,6 +95,18 @@ Sub-issues appear automatically in GitHub's sub-issue panel — don't maintain a
 ## Dependencies / related
 <e.g. "Blocked by #<backend sub-issue>" for the frontend sub-issue>
 ```
+
+**Write acceptance criteria as Given / When / Then** for anything non-trivial
+(Gherkin / Cucumber): `Given <context>, When <action>, Then <observable
+outcome>`. Separating context, action, and outcome removes ambiguity and
+makes each criterion a script QA can execute directly — the same execution
+model this workflow already uses. Example: `Given a logged-in user, When they
+submit an expense with an empty amount, Then the API returns 422 and no
+record is created.` Keep plain `- [ ]` conditions for genuinely trivial
+checks — don't add ceremony where a one-liner is unambiguous. Every criterion,
+in either form, must be **verifiable by execution** (an observable outcome, a
+measured threshold, a specific output) — never a subjective bar like "code is
+clean" or "performance is good".
 
 ## Body template — chore
 

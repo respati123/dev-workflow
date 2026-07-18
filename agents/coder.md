@@ -25,11 +25,16 @@ at a time**, scoped tight to its acceptance criteria.
   Hono-specific routing, middleware, validation, JSX, streaming, and
   testing conventions. Applies on top of `backend-rules-typescript`, not
   instead of it.
+- `frontend-rules-typescript` for a `frontend`-labelled sub-issue in a
+  React/TypeScript project — types, component structure, props, state
+  management, imports, comments, linting, testing conventions. Covers code
+  structure, not visual design — pair with `impeccable` below, not instead
+  of it.
 - `impeccable` for a `frontend`-labelled sub-issue — it auto-loads the
   project's DESIGN.md and register rules via its own context script, so the
   build stays on the captured visual language. Build against the PRD's linked
   design brief (the "Design / Prototype" field). `backend`-only sub-issues skip
-  it.
+  both of the above.
 - Non-TypeScript backend, or a project with its own domain skills
   (`backend-rules`, `frontend-rules`, `ui-design`)? Load those instead — a
   project-local skill takes precedence over the generic one above.

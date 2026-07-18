@@ -40,11 +40,22 @@ below.
 
 1. Load the `create-brd` skill and run it for the feature described. It
    saves to `docs/brd/<slug>.md` and iterates with the user until approved.
-2. Once the BRD is approved, load the `create-prd` skill and run it for the
-   same feature — or once per feature if the BRD bundles several, per
-   `create-prd`'s own one-feature-per-PRD rule.
-3. Report both file paths. Stop there — ticket creation is a separate step
-   (`to-tickets`), only run it if the user asks.
+2. Once the BRD is approved, load the `create-prd` skill for the same
+   feature. If the BRD bundles several features, `create-prd`'s own step 2
+   already lists them as options and asks which one to draft now — one PRD
+   per invocation, not all of them at once.
+3. Once the PRD is saved, **always ask** (`AskUserQuestion`, single-select):
+   - **Continue to `to-tickets`** — the common case once a PRD is drafted.
+   - **Review / revise the PRD first** — loop back into `create-prd`'s own
+     iterate step; re-ask this same question once the user is done revising.
+   On "Continue", load the `to-tickets` skill for this PRD. `to-tickets`
+   itself asks which issue to start on and hands off to `to-implement` —
+   nothing further to do here.
+4. If the BRD bundled more features than the one just spec'd, say so plainly
+   at the end ("N more feature(s) from this BRD still need a PRD — run
+   `to-spec`/`create-prd` again when ready"). Don't loop into the remaining
+   features automatically — each one goes through its own review/continue
+   checkpoint, not a batch.
 
 If the user already has an approved BRD and only wants the PRD, skip step 1
 and go straight to `create-prd` — don't force a redundant BRD pass.

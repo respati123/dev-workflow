@@ -36,6 +36,13 @@ Relay its report and stop; skip the steps below.
 4. Propose the full breakdown (parent + sub-issue titles) to the user before
    creating anything.
 5. Report parent + sub-issue numbers and URLs.
+6. **Ask which sub-issue to start on** (`AskUserQuestion`, single-select):
+   list the ones that are actually ready — not blocked by another sub-issue
+   per the dependency order from step 2 — as options, with the first one in
+   dependency order (backend before the frontend sub-issue that depends on
+   it) labeled "(Recommended)". Once the user picks, load the `to-implement`
+   skill for that sub-issue number right away — don't wait for a separate
+   go-ahead.
 
 Bugs/chores found outside a spec still go through the plain `/issue`
 command, not this skill — `to-tickets` is specifically for spec-derived

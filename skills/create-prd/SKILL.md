@@ -26,9 +26,13 @@ scope to hold the PRD accountable to).
 
 A BRD can cover several functional requirements bundled together. Figure out
 which one(s) this PRD is for. If the BRD already scopes a single feature,
-that's it — confirm in one line rather than re-asking. If it bundles several,
-ask the user which feature this PRD covers (one feature = one PRD; if they
-want more than one, that's more invocations of this skill, not a bigger doc).
+that's it — confirm in one line rather than re-asking.
+
+If it bundles several, **list every feature the BRD covers as options** (one
+per bundled feature/FR group) and ask which one to draft a PRD for right now
+— `AskUserQuestion`, single-select: one feature = one PRD per invocation.
+Don't draft all of them in one pass; the rest stay available for another
+invocation of this skill once the user is ready for them.
 
 ### 3. Codebase research (instead of web research)
 

@@ -53,9 +53,17 @@ research (step 2) and raw material (step 3) already cover. Ask the user
 not a 20-question form. Typical gaps worth asking about explicitly:
 
 - Business goal / success metric (what does "done" look like, numerically?)
-- Scope boundary (what's explicitly OUT, not just what's in)
+- Which specific features/capabilities to build in this project — not just
+  the in/out boundary, the actual feature list
 - Stakeholders/approvers
 - Hard constraints (deadline, budget, regulatory)
+
+**Never ask a blank question — always attach a recommendation.** Research
+(step 2) exists precisely so you can propose the likely answer instead of
+handing the user an empty form: "Based on [source], recommend building
+features A, B, C for v1 — confirm or adjust?" beats "What features do you
+want?" Use `AskUserQuestion` with your recommended option listed first and
+labeled "(Recommended)" when the question has discrete choices.
 
 If the research + raw material already answer something confidently, state
 your assumption instead of asking ("Assuming this is IDR-only like the rest of

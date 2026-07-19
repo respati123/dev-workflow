@@ -51,10 +51,14 @@ your toolset for a delegation mechanism, best match first:
    execute is UNVERIFIED, not PASS.
 6. Verdict: **PASS** only if every criterion passes AND CI is green (or no
    CI configured); otherwise **FAIL** with the failing criteria/CI check
-   listed. Never fix code yourself. **Invoked standalone (not via `ship`)**:
-   on FAIL, this skill doesn't auto-loop back — tell the user which
-   issue/PR needs `to-implement` re-run with this failure as context, then
-   `to-qa` again once it's pushed.
+   listed. Never fix code yourself.
+
+   **Invoked standalone (not via `ship`)**: on FAIL, don't just report and
+   stop — ask the user (`AskUserQuestion`, single-select) how to proceed:
+   (1) delegate to the `coder` role/subagent to fix the failing criteria on
+   the same PR branch, then re-run `to-qa`, or (2) leave it for the user to
+   fix manually. Only spawn `coder` on explicit choice (1) — never fix the
+   findings yourself or assume the answer.
 7. On **PASS**: check whether this was the last sub-issue for its parent.
    Read the parent number from this issue's `## Parent` line, then list the
    parent's sub-issues and their state:

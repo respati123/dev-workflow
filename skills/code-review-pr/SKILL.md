@@ -77,5 +77,16 @@ first:
     LGTM → `gh pr review <PR> --approve --body "<summary + non-blocking notes>"`.
 
 Review statically — don't run the app (that's `to-qa`, and it runs after
-this passes) and never edit code. Blocking findings go back to whoever's
-implementing, not fixed here.
+this passes) and never edit code (neither this skill nor `techlead` ever
+does — a fix, if any, is always a separate delegation). Blocking findings go
+back to whoever's implementing, not fixed here.
+
+## After the review
+
+- **LGTM** → done, nothing further to do.
+- **BLOCKING findings** → don't just post and stop. Summarize the findings,
+  then ask the user (`AskUserQuestion`, single-select) how they want to
+  proceed: (1) delegate to the `coder` role/subagent to fix them on the same
+  branch, then re-review, or (2) leave it for the user to fix manually. Only
+  spawn `coder` on explicit choice (1) — never fix the findings yourself or
+  assume the answer.

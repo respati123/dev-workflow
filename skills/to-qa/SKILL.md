@@ -20,11 +20,14 @@ your toolset for a delegation mechanism, best match first:
 
 1. **Claude Code**: spawn the `role-installer` subagent first (task `"ensure
    qa"`). `READY` → delegate to `qa` via the Agent tool, `subagent_type:
-   "qa"`, foreground — passing the PR number. `NEEDS_RESTART` → tell the
-   user to restart Claude Code once; don't run inline as a workaround unless
-   this context isn't the one that just implemented or reviewed the
-   change — dynamic verification by the same context that wrote or approved
-   the code isn't independent verification.
+   "qa"`, foreground — passing the PR number. `NEEDS_RESTART` → don't just
+   tell the user and stop; ask (`AskUserQuestion`, single-select): (1)
+   restart Claude Code now, then re-run `to-qa` on this PR to resume
+   [recommended] — nothing about the PR changes while waiting; (2) proceed
+   inline anyway **only if this context isn't the one that just implemented
+   or reviewed the change**, with the verdict flagged as same-context, not
+   independent verification. If this context did implement or review it,
+   option (2) isn't available — only (1) applies.
 2. **Pi**, with `extensions/subagent/` installed: the same idea via the
    `subagent` tool — `{agent: "role-installer", task: "ensure qa"}` first,
    then `{agent: "qa", task: "..."}` on `READY`.

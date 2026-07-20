@@ -24,10 +24,14 @@ first:
    `"ensure techlead"`). `READY` → delegate to `techlead` via the Agent
    tool, `subagent_type: "techlead"`, foreground — passing the PR number
    (fresh context matters here: don't hand it the implementer's reasoning,
-   just the PR). `NEEDS_RESTART` → tell the user to restart Claude Code
-   once; don't run inline as a workaround unless this context did **not**
-   write the diff being reviewed — a review by the same context that wrote
-   the code is not a review.
+   just the PR). `NEEDS_RESTART` → don't just tell the user and stop; ask
+   (`AskUserQuestion`, single-select): (1) restart Claude Code now, then
+   re-run `code-review-pr` on this PR to resume [recommended] — nothing
+   about the PR changes while waiting; (2) proceed inline anyway **only if
+   this context did not write the diff being reviewed**, with the review
+   output flagged as same-context, not independently reviewed. If this
+   context did write the diff, option (2) isn't available — a review by the
+   same context that wrote the code is not a review, so (1) is the only path.
 2. **Pi**, with `extensions/subagent/` installed: the same idea via the
    `subagent` tool — `{agent: "role-installer", task: "ensure techlead"}`
    first, then `{agent: "techlead", task: "..."}` on `READY`.

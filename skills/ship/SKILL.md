@@ -21,11 +21,16 @@ for a delegation mechanism and use the best match available, in this order:
    - **Claude Code**: before each role, spawn the `role-installer` subagent
      (`subagent_type: "role-installer"`, task `"ensure <role>"`) — it
      checks/installs the role in its own context, off `run_in_background:
-     false`, and reports one line: `READY` or `NEEDS_RESTART`.
-     `NEEDS_RESTART` → tell the user to restart Claude Code once, and run
-     this phase inline for now instead of blocking (except techlead/qa — see
-     rung 3 below). `READY` → delegate to `<role>` itself, `subagent_type`
-     set to the role name, `run_in_background: false`.
+     false`, and reports one line: `READY` or `NEEDS_RESTART`. Step 0's
+     preflight already runs this for all five roles once at the start of the
+     pipeline, so this per-phase check is normally a no-op confirming
+     `READY`. `NEEDS_RESTART` on a non-gate role (`scout`/`pm`/`coder`) →
+     tell the user to restart Claude Code once, and run this phase inline
+     for now instead of blocking. `NEEDS_RESTART` on `techlead`/`qa` here
+     (preflight missed it, or it regressed mid-run) → don't just state it,
+     handle it the same way as Step 0's preflight — see rung 3. `READY` →
+     delegate to `<role>` itself, `subagent_type` set to the role name,
+     `run_in_background: false`.
    - **Pi**, with this package's `extensions/subagent/` installed per the
      README: the `subagent` tool. Single mode `{agent: "<role>", task: "..."}`
      for one call; for the coder → techlead → qa sequence prefer **chain
@@ -46,8 +51,12 @@ for a delegation mechanism and use the best match available, in this order:
    starting the next phase.
 3. **Neither is available**: do the phase inline yourself — except
    **techlead and qa, which MUST run with fresh context** (a review by the
-   same context that wrote the code is not a review); if you can't get fresh
-   context for them, stop and tell the user.
+   same context that wrote the code is not a review). If you can't get
+   fresh context for them, don't just stop and state it — ask the user
+   (`AskUserQuestion`, single-select): (1) restart/reconnect to get a fresh
+   context for this role, then resume [recommended]; (2) proceed inline
+   anyway, accepting a same-context review, with the output explicitly
+   flagged as not independently reviewed. Only proceed on explicit choice (2).
 
 You MUST stop at every **[CHECKPOINT]**: present the info concisely, ask,
 and WAIT for approval. Never merge — merging is always manual.
@@ -60,7 +69,26 @@ connected, otherwise run `gh` as written — mapping in
 sequentially in dependency order (backend first). A dependent sub-issue does
 not start until the sub-issue it depends on is merged.
 
-## Step 0 — Resume check
+## Step 0 — Preflight & resume check
+
+**Claude Code only, auto, before anything else**: spawn `role-installer`
+once for each of the five roles (`scout`, `pm`, `coder`, `techlead`, `qa`),
+foreground, `run_in_background: false`. This is the cheapest point to catch
+a missing subagent — no branch or PR exists yet.
+- `scout`/`pm`/`coder` report `NEEDS_RESTART` → note it, no pipeline-breaking
+  issue, they fall back to running inline (rung 1 above) when their phase
+  comes up.
+- `techlead`/`qa` report `NEEDS_RESTART` → stop now, before Step 1, and ask
+  the user (`AskUserQuestion`, single-select): (1) restart Claude Code now,
+  then re-run `/ship <task>` to resume — nothing is lost, no branch/PR state
+  exists yet [recommended]; (2) proceed anyway, accepting that this run's
+  techlead/qa reviews won't have fully isolated fresh context — every such
+  review's output must then be flagged with that caveat. Only proceed on
+  explicit choice (2).
+
+Pi and other harnesses: `role-installer`/`NEEDS_RESTART` don't apply (Pi's
+roles are symlinked, resolve immediately) — skip straight to the resume
+check below.
 
 If the task is an existing issue number, look for prior work before planning:
 an `in-progress` label, a `feat/<n>-*`/`fix/<n>-*` branch, or an open PR
@@ -95,8 +123,11 @@ Pick the next sub-issue in dependency order:
 - Delegate to **techlead** with FRESH context (no coder reasoning): review
   the PR diff vs acceptance criteria. Verdict: BLOCKING findings or LGTM.
 - BLOCKING → hand findings back to **coder** to fix on the same branch, then
-  re-review with a fresh **techlead**. Max 3 rounds; if still blocked,
-  **STOP** and report what remains. [CHECKPOINT]
+  re-review with a fresh **techlead**. Max 3 rounds; if still blocked, don't
+  just report and stop — ask the user (`AskUserQuestion`, single-select):
+  (1) allow more rounds and keep iterating with **coder**; (2) leave the
+  remaining findings for the user to fix manually; (3) abandon this
+  sub-issue for now and move to another ready one. [CHECKPOINT]
 - LGTM → continue.
 
 ## Step 5 — QA  (serial, after LGTM)
